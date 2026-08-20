@@ -10,33 +10,232 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AcademyRouteImport } from './routes/academy'
+import { Route as AssinaturaRouteImport } from './routes/assinatura'
+import { Route as BibliotecaRouteImport } from './routes/biblioteca'
+import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
+import { Route as CrmRouteImport } from './routes/crm'
+import { Route as FuncionarioIaRouteImport } from './routes/funcionario-ia'
+import { Route as LandingPagesRouteImport } from './routes/landing-pages'
+import { Route as LinksInteligentesRouteImport } from './routes/links-inteligentes'
+import { Route as LojaRouteImport } from './routes/loja'
+import { Route as MarketingRouteImport } from './routes/marketing'
+import { Route as MinhaRedeRouteImport } from './routes/minha-rede'
+import { Route as ParceirosRouteImport } from './routes/parceiros'
+import { Route as PromptStudioRouteImport } from './routes/prompt-studio'
+import { Route as RelatoriosRouteImport } from './routes/relatorios'
+import { Route as TabuleiroRouteImport } from './routes/tabuleiro'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AcademyRoute = AcademyRouteImport.update({
+  id: '/academy',
+  path: '/academy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AssinaturaRoute = AssinaturaRouteImport.update({
+  id: '/assinatura',
+  path: '/assinatura',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BibliotecaRoute = BibliotecaRouteImport.update({
+  id: '/biblioteca',
+  path: '/biblioteca',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
+  id: '/configuracoes',
+  path: '/configuracoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CrmRoute = CrmRouteImport.update({
+  id: '/crm',
+  path: '/crm',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FuncionarioIaRoute = FuncionarioIaRouteImport.update({
+  id: '/funcionario-ia',
+  path: '/funcionario-ia',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LandingPagesRoute = LandingPagesRouteImport.update({
+  id: '/landing-pages',
+  path: '/landing-pages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LinksInteligentesRoute = LinksInteligentesRouteImport.update({
+  id: '/links-inteligentes',
+  path: '/links-inteligentes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LojaRoute = LojaRouteImport.update({
+  id: '/loja',
+  path: '/loja',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketingRoute = MarketingRouteImport.update({
+  id: '/marketing',
+  path: '/marketing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MinhaRedeRoute = MinhaRedeRouteImport.update({
+  id: '/minha-rede',
+  path: '/minha-rede',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ParceirosRoute = ParceirosRouteImport.update({
+  id: '/parceiros',
+  path: '/parceiros',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PromptStudioRoute = PromptStudioRouteImport.update({
+  id: '/prompt-studio',
+  path: '/prompt-studio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RelatoriosRoute = RelatoriosRouteImport.update({
+  id: '/relatorios',
+  path: '/relatorios',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TabuleiroRoute = TabuleiroRouteImport.update({
+  id: '/tabuleiro',
+  path: '/tabuleiro',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/academy': typeof AcademyRoute
+  '/assinatura': typeof AssinaturaRoute
+  '/biblioteca': typeof BibliotecaRoute
+  '/configuracoes': typeof ConfiguracoesRoute
+  '/crm': typeof CrmRoute
+  '/funcionario-ia': typeof FuncionarioIaRoute
+  '/landing-pages': typeof LandingPagesRoute
+  '/links-inteligentes': typeof LinksInteligentesRoute
+  '/loja': typeof LojaRoute
+  '/marketing': typeof MarketingRoute
+  '/minha-rede': typeof MinhaRedeRoute
+  '/parceiros': typeof ParceirosRoute
+  '/prompt-studio': typeof PromptStudioRoute
+  '/relatorios': typeof RelatoriosRoute
+  '/tabuleiro': typeof TabuleiroRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/academy': typeof AcademyRoute
+  '/assinatura': typeof AssinaturaRoute
+  '/biblioteca': typeof BibliotecaRoute
+  '/configuracoes': typeof ConfiguracoesRoute
+  '/crm': typeof CrmRoute
+  '/funcionario-ia': typeof FuncionarioIaRoute
+  '/landing-pages': typeof LandingPagesRoute
+  '/links-inteligentes': typeof LinksInteligentesRoute
+  '/loja': typeof LojaRoute
+  '/marketing': typeof MarketingRoute
+  '/minha-rede': typeof MinhaRedeRoute
+  '/parceiros': typeof ParceirosRoute
+  '/prompt-studio': typeof PromptStudioRoute
+  '/relatorios': typeof RelatoriosRoute
+  '/tabuleiro': typeof TabuleiroRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/academy': typeof AcademyRoute
+  '/assinatura': typeof AssinaturaRoute
+  '/biblioteca': typeof BibliotecaRoute
+  '/configuracoes': typeof ConfiguracoesRoute
+  '/crm': typeof CrmRoute
+  '/funcionario-ia': typeof FuncionarioIaRoute
+  '/landing-pages': typeof LandingPagesRoute
+  '/links-inteligentes': typeof LinksInteligentesRoute
+  '/loja': typeof LojaRoute
+  '/marketing': typeof MarketingRoute
+  '/minha-rede': typeof MinhaRedeRoute
+  '/parceiros': typeof ParceirosRoute
+  '/prompt-studio': typeof PromptStudioRoute
+  '/relatorios': typeof RelatoriosRoute
+  '/tabuleiro': typeof TabuleiroRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/academy'
+    | '/assinatura'
+    | '/biblioteca'
+    | '/configuracoes'
+    | '/crm'
+    | '/funcionario-ia'
+    | '/landing-pages'
+    | '/links-inteligentes'
+    | '/loja'
+    | '/marketing'
+    | '/minha-rede'
+    | '/parceiros'
+    | '/prompt-studio'
+    | '/relatorios'
+    | '/tabuleiro'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/academy'
+    | '/assinatura'
+    | '/biblioteca'
+    | '/configuracoes'
+    | '/crm'
+    | '/funcionario-ia'
+    | '/landing-pages'
+    | '/links-inteligentes'
+    | '/loja'
+    | '/marketing'
+    | '/minha-rede'
+    | '/parceiros'
+    | '/prompt-studio'
+    | '/relatorios'
+    | '/tabuleiro'
+  id:
+    | '__root__'
+    | '/'
+    | '/academy'
+    | '/assinatura'
+    | '/biblioteca'
+    | '/configuracoes'
+    | '/crm'
+    | '/funcionario-ia'
+    | '/landing-pages'
+    | '/links-inteligentes'
+    | '/loja'
+    | '/marketing'
+    | '/minha-rede'
+    | '/parceiros'
+    | '/prompt-studio'
+    | '/relatorios'
+    | '/tabuleiro'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AcademyRoute: typeof AcademyRoute
+  AssinaturaRoute: typeof AssinaturaRoute
+  BibliotecaRoute: typeof BibliotecaRoute
+  ConfiguracoesRoute: typeof ConfiguracoesRoute
+  CrmRoute: typeof CrmRoute
+  FuncionarioIaRoute: typeof FuncionarioIaRoute
+  LandingPagesRoute: typeof LandingPagesRoute
+  LinksInteligentesRoute: typeof LinksInteligentesRoute
+  LojaRoute: typeof LojaRoute
+  MarketingRoute: typeof MarketingRoute
+  MinhaRedeRoute: typeof MinhaRedeRoute
+  ParceirosRoute: typeof ParceirosRoute
+  PromptStudioRoute: typeof PromptStudioRoute
+  RelatoriosRoute: typeof RelatoriosRoute
+  TabuleiroRoute: typeof TabuleiroRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +247,131 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/academy': {
+      id: '/academy'
+      path: '/academy'
+      fullPath: '/academy'
+      preLoaderRoute: typeof AcademyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/assinatura': {
+      id: '/assinatura'
+      path: '/assinatura'
+      fullPath: '/assinatura'
+      preLoaderRoute: typeof AssinaturaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/biblioteca': {
+      id: '/biblioteca'
+      path: '/biblioteca'
+      fullPath: '/biblioteca'
+      preLoaderRoute: typeof BibliotecaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/configuracoes': {
+      id: '/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/configuracoes'
+      preLoaderRoute: typeof ConfiguracoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/crm': {
+      id: '/crm'
+      path: '/crm'
+      fullPath: '/crm'
+      preLoaderRoute: typeof CrmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/funcionario-ia': {
+      id: '/funcionario-ia'
+      path: '/funcionario-ia'
+      fullPath: '/funcionario-ia'
+      preLoaderRoute: typeof FuncionarioIaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/landing-pages': {
+      id: '/landing-pages'
+      path: '/landing-pages'
+      fullPath: '/landing-pages'
+      preLoaderRoute: typeof LandingPagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/links-inteligentes': {
+      id: '/links-inteligentes'
+      path: '/links-inteligentes'
+      fullPath: '/links-inteligentes'
+      preLoaderRoute: typeof LinksInteligentesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/loja': {
+      id: '/loja'
+      path: '/loja'
+      fullPath: '/loja'
+      preLoaderRoute: typeof LojaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marketing': {
+      id: '/marketing'
+      path: '/marketing'
+      fullPath: '/marketing'
+      preLoaderRoute: typeof MarketingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/minha-rede': {
+      id: '/minha-rede'
+      path: '/minha-rede'
+      fullPath: '/minha-rede'
+      preLoaderRoute: typeof MinhaRedeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/parceiros': {
+      id: '/parceiros'
+      path: '/parceiros'
+      fullPath: '/parceiros'
+      preLoaderRoute: typeof ParceirosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prompt-studio': {
+      id: '/prompt-studio'
+      path: '/prompt-studio'
+      fullPath: '/prompt-studio'
+      preLoaderRoute: typeof PromptStudioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/relatorios': {
+      id: '/relatorios'
+      path: '/relatorios'
+      fullPath: '/relatorios'
+      preLoaderRoute: typeof RelatoriosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tabuleiro': {
+      id: '/tabuleiro'
+      path: '/tabuleiro'
+      fullPath: '/tabuleiro'
+      preLoaderRoute: typeof TabuleiroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AcademyRoute: AcademyRoute,
+  AssinaturaRoute: AssinaturaRoute,
+  BibliotecaRoute: BibliotecaRoute,
+  ConfiguracoesRoute: ConfiguracoesRoute,
+  CrmRoute: CrmRoute,
+  FuncionarioIaRoute: FuncionarioIaRoute,
+  LandingPagesRoute: LandingPagesRoute,
+  LinksInteligentesRoute: LinksInteligentesRoute,
+  LojaRoute: LojaRoute,
+  MarketingRoute: MarketingRoute,
+  MinhaRedeRoute: MinhaRedeRoute,
+  ParceirosRoute: ParceirosRoute,
+  PromptStudioRoute: PromptStudioRoute,
+  RelatoriosRoute: RelatoriosRoute,
+  TabuleiroRoute: TabuleiroRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
