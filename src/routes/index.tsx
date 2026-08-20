@@ -13,6 +13,7 @@ import {
   FileText,
   ShoppingBag,
   Network,
+  type LucideIcon,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -84,8 +85,8 @@ function Dashboard() {
       </section>
 
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {metrics.map((m, i) => (
-          <MetricCard key={m.id} metric={m} icon={metricIcons[i]} />
+        {metrics.map((m) => (
+          <MetricCard key={m.id} metric={m} icon={metricIcons[m.id]} />
         ))}
       </section>
 
