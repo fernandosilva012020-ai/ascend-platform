@@ -101,9 +101,6 @@ function Dashboard() {
               <span className="inline-flex items-center gap-1.5">
                 <span className="size-2 rounded-full bg-chart-1" /> Vendas
               </span>
-              <span className="inline-flex items-center gap-1.5">
-                <span className="size-2 rounded-full bg-chart-3" /> Leads
-              </span>
             </div>
           </div>
           <div className="mt-4">

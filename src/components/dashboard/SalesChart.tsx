@@ -55,13 +55,6 @@ export function SalesChart() {
             strokeWidth={2.5}
             fill="url(#fillSales)"
           />
-          <Area
-            type="monotone"
-            dataKey="leads"
-            stroke="var(--chart-3)"
-            strokeWidth={2}
-            fill="url(#fillLeads)"
-          />
         </AreaChart>
       </ResponsiveContainer>
     </div>
