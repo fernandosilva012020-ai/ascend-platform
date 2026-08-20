@@ -41,7 +41,12 @@ export const Route = createFileRoute("/")({
   component: Dashboard,
 });
 
-const metricIcons = [Users, UserPlus, ShoppingBag, Wallet];
+const metricIcons: Record<string, LucideIcon> = {
+  subs: Users,
+  leads: UserPlus,
+  sales: ShoppingBag,
+  commission: Wallet,
+};
 
 const quickActions = [
   { label: "Criar com IA", icon: Sparkles },
