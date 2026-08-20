@@ -86,7 +86,7 @@ function Dashboard() {
 
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {metrics.map((m) => (
-          <MetricCard key={m.id} metric={m} icon={metricIcons[m.id]} />
+          <MetricCard key={m.id} metric={m} icon={metricIcons[m.id] ?? Users} />
         ))}
       </section>
 
