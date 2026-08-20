@@ -13,7 +13,7 @@ export function MetricCard({ metric, icon: Icon }: { metric: Metric; icon: Lucid
       <div className="relative flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="truncate text-sm text-muted-foreground">{metric.label}</p>
-          <p className="mt-2 truncate font-display text-2xl font-bold sm:text-[28px]">
+          <p className="mt-2 font-display text-2xl font-bold tracking-tight break-words">
             {metric.value}
           </p>
         </div>
