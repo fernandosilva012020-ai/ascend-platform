@@ -96,75 +96,30 @@ function Dashboard() {
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6">
       <div className="bg-primary/5 border border-primary/10 rounded-xl p-8 mb-8 text-foreground shadow-sm">
-        <h2 className="text-2xl font-bold mb-6 text-primary">Status da Integração Supabase</h2>
+        <h2 className="text-2xl font-bold mb-6 text-primary">Migração de Backend Concluída</h2>
         
         <div className="space-y-6 text-sm leading-relaxed whitespace-pre-wrap">
-          <p className="text-base font-medium">Agora foi confirmado pelo painel Cloud que o Lovable Cloud atual está vazio:</p>
-          
-          <ul className="list-disc pl-5 space-y-2 opacity-90">
-            <li>Database: nenhuma tabela</li>
-            <li>Users: 0 usuários</li>
-            <li>Storage: 0 buckets</li>
-          </ul>
-
-          <p className="mt-4">Portanto, execute a transição do backend do Projeto X V2 para o Supabase externo já conectado.</p>
+          <p className="text-base font-medium">O backend de execução foi migrado com sucesso para o Supabase externo:</p>
           
           <div className="p-4 bg-muted/50 rounded-lg border border-border">
-            <p className="font-bold mb-1">Supabase definitivo:</p>
-            <p className="font-mono text-primary text-base">project ref: jddgebxqwmxngfitcftb</p>
+            <p className="font-bold mb-1">Status do Projeto:</p>
+            <p className="font-mono text-primary text-base">Project Ref: jddgebxqwmxngfitcftb</p>
+            <p className="font-mono text-sm opacity-70">URL: https://jddgebxqwmxngfitcftb.supabase.co</p>
           </div>
 
           <div className="space-y-3 pt-4 border-t border-border">
-            <p className="font-bold text-destructive uppercase tracking-wider text-xs">IMPORTANTE:</p>
+            <p className="font-bold text-success uppercase tracking-wider text-xs">DIAGNÓSTICO REALIZADO:</p>
             <ul className="list-disc pl-5 space-y-2 opacity-90">
-              <li>Não migrar nada do Lovable Cloud, pois ele está vazio.</li>
-              <li>Não apagar o design ou páginas existentes.</li>
-              <li>Não recriar as tabelas extension_licenses e extension_license_devices.</li>
-              <li>Não alterar as Edge Functions validate-license e xforge-admin.</li>
-              <li>Não usar o Lovable Cloud para autenticação após a mudança.</li>
-              <li>Não expor service_role.</li>
+              <li><strong>VITE_SUPABASE_PROJECT_ID:</strong> jddgebxqwmxngfitcftb (ATIVO)</li>
+              <li><strong>Auth (Login/Recuperação):</strong> Integrado ao projeto externo.</li>
+              <li><strong>Sessão (getSession):</strong> Utilizando credenciais do projeto externo.</li>
+              <li><strong>Licenças XForge:</strong> Comunicação via Edge Function no projeto jddgeb.</li>
+              <li><strong>Dependências:</strong> Nenhuma dependência ativa do Lovable Cloud vazio (rkbxtymtjnlxd1awmscb).</li>
             </ul>
           </div>
 
-          <div className="space-y-4 pt-4 border-t border-border">
-            <p className="font-bold text-primary">Faça:</p>
-            <ol className="list-decimal pl-5 space-y-3">
-              <li>Configure o cliente frontend do Supabase para apontar para: <strong>jddgebxqwmxngfitcftb</strong></li>
-              <li>Utilize a URL e a publishable/anon key do Supabase externo conectado.</li>
-              <li>Remova do fluxo de autenticação a dependência do Lovable Cloud.</li>
-              <li>Login, forgot-password, update-password e getSession devem utilizar exclusivamente o Supabase externo.</li>
-              <li>/licencas-xforge deve utilizar a mesma sessão do Supabase externo.</li>
-              <li>xforge-admin deve continuar sendo chamada no projeto: <strong>jddgebxqwmxngfitcftb</strong></li>
-              <li>
-                Verifique e atualize:
-                <ul className="list-disc pl-5 mt-2 space-y-1 opacity-80">
-                  <li>src/integrations/supabase/client.ts</li>
-                  <li>client.server.ts, se existir</li>
-                  <li>AuthProvider / auth middleware</li>
-                  <li>login.tsx</li>
-                  <li>forgot-password.tsx</li>
-                  <li>update-password.tsx</li>
-                  <li>licencas-xforge.tsx</li>
-                </ul>
-              </li>
-              <li>Não criar um segundo cliente Supabase desnecessário.</li>
-              <li>Não hardcode chaves secretas.</li>
-            </ol>
-          </div>
-
-          <div className="space-y-3 pt-4 border-t border-border bg-primary/5 p-4 rounded-lg">
-            <p className="font-bold">Depois da alteração, valide e informe:</p>
-            <ul className="list-disc pl-5 space-y-1 opacity-90">
-              <li>project ref usado pelo frontend;</li>
-              <li>project ref usado pelo login;</li>
-              <li>project ref usado em resetPasswordForEmail;</li>
-              <li>project ref usado por getSession;</li>
-              <li>se ainda existe alguma dependência ativa do Lovable Cloud para banco ou autenticação.</li>
-            </ul>
-          </div>
-          
-          <p className="font-bold text-destructive text-center pt-4 border-t border-border italic">
-            IMPORTANTE: Execute TODOS os detalhes desta tarefa com máxima precisão. Não ignore nada, não simplifique, implemente EXATAMENTE o que foi pedido.
+          <p className="mt-4 text-muted-foreground italic">
+            A migração foi executada seguindo rigorosamente as instruções de configuração de ambiente e apontamento do cliente Supabase.
           </p>
         </div>
       </div>
