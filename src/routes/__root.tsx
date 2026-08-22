@@ -127,12 +127,13 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const { location } = useRouterState();
-  const isLoginPage = location.pathname === "/login";
+  const publicRoutes = ["/login", "/forgot-password", "/update-password"];
+  const isPublicPage = publicRoutes.includes(location.pathname);
 
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        {isLoginPage ? (
+        {isPublicPage ? (
           <>
             <Outlet />
             <Toaster position="top-right" richColors />

@@ -15,6 +15,7 @@ import { Route as AssinaturaRouteImport } from './routes/assinatura'
 import { Route as BibliotecaRouteImport } from './routes/biblioteca'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as CrmRouteImport } from './routes/crm'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as FuncionarioIaRouteImport } from './routes/funcionario-ia'
 import { Route as LandingPagesRouteImport } from './routes/landing-pages'
 import { Route as LicencasXforgeRouteImport } from './routes/licencas-xforge'
@@ -27,6 +28,7 @@ import { Route as ParceirosRouteImport } from './routes/parceiros'
 import { Route as PromptStudioRouteImport } from './routes/prompt-studio'
 import { Route as RelatoriosRouteImport } from './routes/relatorios'
 import { Route as TabuleiroRouteImport } from './routes/tabuleiro'
+import { Route as UpdatePasswordRouteImport } from './routes/update-password'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -56,6 +58,11 @@ const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
 const CrmRoute = CrmRouteImport.update({
   id: '/crm',
   path: '/crm',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FuncionarioIaRoute = FuncionarioIaRouteImport.update({
@@ -118,6 +125,11 @@ const TabuleiroRoute = TabuleiroRouteImport.update({
   path: '/tabuleiro',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UpdatePasswordRoute = UpdatePasswordRouteImport.update({
+  id: '/update-password',
+  path: '/update-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -126,6 +138,7 @@ export interface FileRoutesByFullPath {
   '/biblioteca': typeof BibliotecaRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/crm': typeof CrmRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/funcionario-ia': typeof FuncionarioIaRoute
   '/landing-pages': typeof LandingPagesRoute
   '/licencas-xforge': typeof LicencasXforgeRoute
@@ -138,6 +151,7 @@ export interface FileRoutesByFullPath {
   '/prompt-studio': typeof PromptStudioRoute
   '/relatorios': typeof RelatoriosRoute
   '/tabuleiro': typeof TabuleiroRoute
+  '/update-password': typeof UpdatePasswordRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -146,6 +160,7 @@ export interface FileRoutesByTo {
   '/biblioteca': typeof BibliotecaRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/crm': typeof CrmRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/funcionario-ia': typeof FuncionarioIaRoute
   '/landing-pages': typeof LandingPagesRoute
   '/licencas-xforge': typeof LicencasXforgeRoute
@@ -158,6 +173,7 @@ export interface FileRoutesByTo {
   '/prompt-studio': typeof PromptStudioRoute
   '/relatorios': typeof RelatoriosRoute
   '/tabuleiro': typeof TabuleiroRoute
+  '/update-password': typeof UpdatePasswordRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -167,6 +183,7 @@ export interface FileRoutesById {
   '/biblioteca': typeof BibliotecaRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/crm': typeof CrmRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/funcionario-ia': typeof FuncionarioIaRoute
   '/landing-pages': typeof LandingPagesRoute
   '/licencas-xforge': typeof LicencasXforgeRoute
@@ -179,6 +196,7 @@ export interface FileRoutesById {
   '/prompt-studio': typeof PromptStudioRoute
   '/relatorios': typeof RelatoriosRoute
   '/tabuleiro': typeof TabuleiroRoute
+  '/update-password': typeof UpdatePasswordRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -189,6 +207,7 @@ export interface FileRouteTypes {
     | '/biblioteca'
     | '/configuracoes'
     | '/crm'
+    | '/forgot-password'
     | '/funcionario-ia'
     | '/landing-pages'
     | '/licencas-xforge'
@@ -201,6 +220,7 @@ export interface FileRouteTypes {
     | '/prompt-studio'
     | '/relatorios'
     | '/tabuleiro'
+    | '/update-password'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -209,6 +229,7 @@ export interface FileRouteTypes {
     | '/biblioteca'
     | '/configuracoes'
     | '/crm'
+    | '/forgot-password'
     | '/funcionario-ia'
     | '/landing-pages'
     | '/licencas-xforge'
@@ -221,6 +242,7 @@ export interface FileRouteTypes {
     | '/prompt-studio'
     | '/relatorios'
     | '/tabuleiro'
+    | '/update-password'
   id:
     | '__root__'
     | '/'
@@ -229,6 +251,7 @@ export interface FileRouteTypes {
     | '/biblioteca'
     | '/configuracoes'
     | '/crm'
+    | '/forgot-password'
     | '/funcionario-ia'
     | '/landing-pages'
     | '/licencas-xforge'
@@ -241,6 +264,7 @@ export interface FileRouteTypes {
     | '/prompt-studio'
     | '/relatorios'
     | '/tabuleiro'
+    | '/update-password'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -250,6 +274,7 @@ export interface RootRouteChildren {
   BibliotecaRoute: typeof BibliotecaRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
   CrmRoute: typeof CrmRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   FuncionarioIaRoute: typeof FuncionarioIaRoute
   LandingPagesRoute: typeof LandingPagesRoute
   LicencasXforgeRoute: typeof LicencasXforgeRoute
@@ -262,6 +287,7 @@ export interface RootRouteChildren {
   PromptStudioRoute: typeof PromptStudioRoute
   RelatoriosRoute: typeof RelatoriosRoute
   TabuleiroRoute: typeof TabuleiroRoute
+  UpdatePasswordRoute: typeof UpdatePasswordRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -306,6 +332,13 @@ declare module '@tanstack/react-router' {
       path: '/crm'
       fullPath: '/crm'
       preLoaderRoute: typeof CrmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/funcionario-ia': {
@@ -392,6 +425,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TabuleiroRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/update-password': {
+      id: '/update-password'
+      path: '/update-password'
+      fullPath: '/update-password'
+      preLoaderRoute: typeof UpdatePasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -402,6 +442,7 @@ const rootRouteChildren: RootRouteChildren = {
   BibliotecaRoute: BibliotecaRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
   CrmRoute: CrmRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   FuncionarioIaRoute: FuncionarioIaRoute,
   LandingPagesRoute: LandingPagesRoute,
   LicencasXforgeRoute: LicencasXforgeRoute,
@@ -414,6 +455,7 @@ const rootRouteChildren: RootRouteChildren = {
   PromptStudioRoute: PromptStudioRoute,
   RelatoriosRoute: RelatoriosRoute,
   TabuleiroRoute: TabuleiroRoute,
+  UpdatePasswordRoute: UpdatePasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
