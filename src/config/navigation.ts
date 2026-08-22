@@ -121,6 +121,12 @@ export const navGroups: NavGroup[] = [
         icon: TrendingUp,
         description: "Indicadores e desempenho detalhado.",
       },
+      {
+        title: "Licenças XForge",
+        url: "/licencas-xforge",
+        icon: Key,
+        description: "Gerenciamento de licenças XForge Pro.",
+      },
     ],
   },
   {
