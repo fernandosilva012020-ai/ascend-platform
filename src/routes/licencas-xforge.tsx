@@ -323,14 +323,20 @@ function LicensesPage() {
                     <div className="mx-auto flex max-w-[400px] flex-col items-center">
                       <AlertCircle className="size-8 text-destructive" />
                       <h4 className="mt-4 font-semibold text-foreground">
-                        Erro ao carregar dados
+                        {error.includes("permissão") ? "Acesso Negado" : "Problema de Autenticação"}
                       </h4>
                       <p className="mt-1 text-sm text-muted-foreground text-center">
                         {error}
                       </p>
-                      <Button variant="outline" className="mt-4" onClick={fetchLicenses}>
-                        Tentar novamente
-                      </Button>
+                      {error === "Sessão administrativa não encontrada." || error === "Sessão expirada. Entre novamente." ? (
+                        <Button variant="premium" className="mt-4" onClick={() => navigate({ to: "/" })}>
+                          Entrar novamente
+                        </Button>
+                      ) : (
+                        <Button variant="outline" className="mt-4" onClick={fetchLicenses}>
+                          Tentar novamente
+                        </Button>
+                      )}
                     </div>
                   </td>
                 </tr>
