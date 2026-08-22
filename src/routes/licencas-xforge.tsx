@@ -104,7 +104,7 @@ function LicensesPage() {
       } = await supabase.auth.getSession();
 
       if (!session) {
-        navigate({ to: "/auth" }); // Changed to /auth as it's common in Lovable projects
+        navigate({ to: "/" });
         return;
       }
 
