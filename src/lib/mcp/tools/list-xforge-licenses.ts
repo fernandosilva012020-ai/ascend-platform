@@ -27,6 +27,7 @@ export default defineTool({
       .optional()
       .describe("Número máximo de licenças retornadas. Padrão: 50."),
   },
+  outputSchema: {},
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: async ({ search, status, limit }, ctx) => {
     if (!ctx.isAuthenticated()) {
