@@ -96,46 +96,47 @@ function Dashboard() {
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6">
       <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-6 text-blue-500 mb-6">
-        <h2 className="text-xl font-bold mb-2">Auditar Supabase atual antes da migração</h2>
-        <p className="mb-4 font-semibold text-destructive">NÃO altere nenhuma configuração ou arquivo ainda.</p>
+        <h2 className="text-xl font-bold mb-2">Verificar estrutura XForge no backend atual</h2>
+        <p className="mb-4 font-semibold text-destructive">Não altere nenhum arquivo, tabela ou função ainda.</p>
         
         <div className="space-y-4 text-sm opacity-90">
-          <p>O diagnóstico confirmou que o Projeto X V2 está conectado a um projeto Supabase diferente do projeto oficial desejado:</p>
-          <p className="font-mono bg-blue-500/20 px-2 py-1 rounded inline-block">jddgebxqwmxngfitcftb</p>
-          
-          <p className="mt-4 font-medium">Antes de trocar qualquer conexão, faça uma auditoria do Supabase atualmente usado pelo aplicativo.</p>
-          
-          <p>Informe:</p>
+          <p>No backend atual do Projeto X V2, inspecione as tabelas:</p>
           <ul className="list-disc pl-5 space-y-1">
-            <li>O project ref atual usado pelo frontend.</li>
-            <li>Quais tabelas do Supabase atual são utilizadas pelo Projeto X V2.</li>
-            <li>Quais páginas/componentes consultam essas tabelas.</li>
-            <li>Se existem dados reais já persistidos nessas tabelas ou apenas dados de demonstração/mock.</li>
-            <li>Quais recursos usam Supabase Auth.</li>
-            <li>Quais Edge Functions do projeto atual são utilizadas pelo frontend.</li>
-            <li>Quais Storage Buckets são utilizados.</li>
-            <li>Quais arquivos dependem diretamente das variáveis de ambiente do Supabase atual.</li>
-            <li>Se trocar a URL e a publishable key pelo projeto jddgebxqwmxngfitcftb quebraria algum módulo existente.</li>
-            <li>Liste exatamente o que precisaria ser migrado antes da troca.</li>
+            <li>extension_licenses</li>
+            <li>extension_license_devices</li>
+            <li>user_roles</li>
+            <li>profiles</li>
           </ul>
+          
+          <p className="mt-4">Informe exatamente:</p>
+          <ol className="list-decimal pl-5 space-y-1">
+            <li>Todas as colunas de <code>extension_licenses</code> com seus tipos.</li>
+            <li>Todas as colunas de <code>extension_license_devices</code> com seus tipos.</li>
+            <li>Todas as colunas de <code>user_roles</code> com seus tipos.</li>
+            <li>Todas as colunas de <code>profiles</code> com seus tipos.</li>
+            <li>Relacionamentos/chaves estrangeiras entre essas tabelas.</li>
+            <li>Políticas RLS existentes.</li>
+            <li>Se já existe alguma função de validação de licença.</li>
+            <li>Se já existe alguma função administrativa para criar, bloquear, reativar ou resetar licenças.</li>
+            <li>Se o usuário <code>fernandosilvamarketing@gmail.com</code> existe no Auth desse backend.</li>
+            <li>Qual papel/role esse usuário possui atualmente.</li>
+          </ol>
           
           <div className="pt-4 border-t border-blue-500/20">
             <p className="font-bold">IMPORTANTE:</p>
             <ul className="list-disc pl-5 space-y-1">
-              <li>Não alterar URLs.</li>
-              <li>Não alterar chaves.</li>
-              <li>Não modificar client.ts.</li>
-              <li>Não criar nem apagar tabelas.</li>
+              <li>Não criar nada.</li>
+              <li>Não modificar nada.</li>
+              <li>Não excluir nada.</li>
               <li>Não alterar autenticação.</li>
-              <li>Não desconectar o Supabase atual.</li>
-              <li>Não revelar service_role ou outras chaves secretas.</li>
-              <li>Apenas analisar e responder.</li>
+              <li>Não mostrar chaves secretas.</li>
+              <li>Apenas responder com o diagnóstico técnico da estrutura atual.</li>
             </ul>
           </div>
 
           <div className="mt-4 p-4 bg-primary/5 rounded-lg border border-primary/10">
-            <p className="font-bold">Objetivo final:</p>
-            <p>Planejar uma migração segura para que o Projeto X V2, login, painel administrativo e XForge Pro utilizem o mesmo Supabase oficial <strong>jddgebxqwmxngfitcftb</strong>, sem quebrar funcionalidades existentes.</p>
+            <p className="font-bold">Objetivo:</p>
+            <p>Adaptar o XForge Pro ao backend que o Projeto X V2 já utiliza, sem recriar estruturas desnecessárias.</p>
           </div>
           
           <p className="font-bold mt-4 italic text-xs uppercase tracking-wider">
