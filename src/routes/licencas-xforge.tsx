@@ -142,7 +142,7 @@ function LicensesPage() {
             Gerencie ativações, clientes e dispositivos da extensão XForge Pro.
           </p>
         </div>
-        <Button variant="premium" className="w-full sm:w-auto">
+        <Button variant="premium" className="w-full sm:w-auto" onClick={() => setIsCreateModalOpen(true)}>
           <Plus className="size-4" />
           Criar licença
         </Button>
