@@ -6,6 +6,7 @@ export default defineTool({
   description:
     "Retorna a identidade da conta Projeto X conectada (id do usuário e e-mail) para confirmar a conexão.",
   inputSchema: {},
+  outputSchema: {},
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: (_input, ctx) => {
     if (!ctx.isAuthenticated()) {
