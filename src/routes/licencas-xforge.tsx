@@ -104,8 +104,8 @@ function LicensesPage() {
       } = await supabase.auth.getSession();
 
       if (!session) {
-        // Redireciona para home (que renderiza login se não autenticado)
-        navigate({ to: "/" });
+        setError("Sessão administrativa não encontrada.");
+        setLoading(false);
         return;
       }
 
@@ -121,13 +121,10 @@ function LicensesPage() {
 
       if (invokeError) {
         if (invokeError.status === 401) {
-          toast.error("Sessão expirada. Entre novamente.");
           setError("Sessão expirada. Entre novamente.");
         } else if (invokeError.status === 403) {
-          toast.error("Esta conta não possui permissão para administrar as licenças XForge.");
           setError("Esta conta não possui permissão para administrar as licenças XForge.");
         } else {
-          toast.error("Não foi possível carregar as licenças. Tente novamente.");
           setError("Não foi possível carregar as licenças. Tente novamente.");
         }
         return;
