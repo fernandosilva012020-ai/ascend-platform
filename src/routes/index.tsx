@@ -1,4 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
+
 import {
   Users,
   UserPlus,
@@ -21,7 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { MetricCard } from "@/components/dashboard/MetricCard";
 import { SalesChart } from "@/components/dashboard/SalesChart";
-import { metrics, recentActivity, partnerProgram, currentUser } from "@/data/mock";
+import { metrics, recentActivity, partnerProgram, currentUser as mockUser } from "@/data/mock";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -66,7 +69,27 @@ const activityIcons = {
 } as const;
 
 function Dashboard() {
-  const firstName = currentUser.name.split(" ")[0];
+  const navigate = useNavigate();
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate({ to: "/login" });
+    }
+  }, [user, loading, navigate]);
+
+  if (loading || !user) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center">
+        <Loader2 className="size-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  const displayName = user.user_metadata?.['full_name'] || user.email?.split('@')[0] || mockUser.name;
+  const displayPlan = user.user_metadata?.['plan'] || mockUser.plan;
+  const firstName = displayName.split(" ")[0];
+
 
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6">
@@ -80,8 +103,9 @@ function Dashboard() {
           </p>
         </div>
         <Badge variant="secondary" className="shrink-0 rounded-full px-3 py-1">
-          {currentUser.plan}
+          {displayPlan}
         </Badge>
+
       </section>
 
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">

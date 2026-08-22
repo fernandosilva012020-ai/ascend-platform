@@ -1,5 +1,6 @@
-import { Link, useRouterState } from "@tanstack/react-router";
-import { LogOut, Hexagon } from "lucide-react";
+import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
+import { LogOut, Hexagon, Loader2 } from "lucide-react";
+
 
 import {
   Sidebar,
@@ -16,13 +17,44 @@ import {
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { navGroups } from "@/config/navigation";
-import { currentUser } from "@/data/mock";
+import { currentUser as mockUser } from "@/data/mock";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
+import { useState } from "react";
+import { toast } from "sonner";
+
 
 export function AppSidebar() {
   const { state, isMobile, setOpenMobile } = useSidebar();
   const collapsed = state === "collapsed" && !isMobile;
   const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      setLoggingOut(true);
+      await signOut();
+      toast.success("Sessão encerrada");
+      navigate({ to: "/login", replace: true });
+    } catch (error) {
+      toast.error("Erro ao sair");
+      console.error(error);
+    } finally {
+      setLoggingOut(false);
+    }
+  };
+
+  const displayName = user?.user_metadata?.['full_name'] || user?.email?.split('@')[0] || mockUser.name;
+  const displayPlan = user?.user_metadata?.['plan'] || mockUser.plan;
+  const initials = (displayName || "U")
+    .split(" ")
+    .map((n: string) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+
 
   return (
     <Sidebar collapsible="icon" className="border-sidebar-border">
@@ -97,25 +129,30 @@ export function AppSidebar() {
         >
           <Avatar className="size-9 shrink-0 border border-sidebar-border">
             <AvatarFallback className="bg-sidebar-accent text-xs font-semibold text-sidebar-accent-foreground">
-              {currentUser.initials}
+              {initials}
             </AvatarFallback>
           </Avatar>
+
           {!collapsed && (
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-medium text-sidebar-accent-foreground">
-                {currentUser.name}
+                {displayName}
               </p>
-              <p className="truncate text-[11px] text-sidebar-primary">{currentUser.plan}</p>
+              <p className="truncate text-[11px] text-sidebar-primary">{displayPlan}</p>
             </div>
+
           )}
           {!collapsed && (
             <button
               type="button"
               aria-label="Sair"
-              className="grid size-8 shrink-0 place-items-center rounded-lg text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+              onClick={handleLogout}
+              disabled={loggingOut}
+              className="grid size-8 shrink-0 place-items-center rounded-lg text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground disabled:opacity-50"
             >
-              <LogOut className="size-4" />
+              {loggingOut ? <Loader2 className="size-4 animate-spin" /> : <LogOut className="size-4" />}
             </button>
+
           )}
         </div>
       </SidebarFooter>

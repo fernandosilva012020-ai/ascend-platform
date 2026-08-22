@@ -13,6 +13,8 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "@/hooks/useAuth";
+
 
 function NotFoundComponent() {
   return (
@@ -125,11 +127,14 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AppLayout>
-        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <Outlet />
-      </AppLayout>
-      <Toaster position="top-right" richColors />
+      <AuthProvider>
+        <AppLayout>
+          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+          <Outlet />
+        </AppLayout>
+        <Toaster position="top-right" richColors />
+      </AuthProvider>
     </QueryClientProvider>
+
   );
 }

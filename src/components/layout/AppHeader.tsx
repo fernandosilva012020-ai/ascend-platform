@@ -15,7 +15,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { getNavItem } from "@/config/navigation";
-import { currentUser, notifications } from "@/data/mock";
+import { currentUser as mockUser, notifications } from "@/data/mock";
+import { useAuth } from "@/hooks/useAuth";
+
 
 const quickActions = [
   { label: "Criar com IA", icon: Sparkles },
@@ -27,6 +29,16 @@ const quickActions = [
 export function AppHeader() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
   const item = getNavItem(pathname);
+  const { user } = useAuth();
+
+  const displayName = user?.user_metadata?.['full_name'] || user?.email?.split('@')[0] || mockUser.name;
+  const initials = (displayName || "U")
+    .split(" ")
+    .map((n: string) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+
 
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-card/85 backdrop-blur-md">
@@ -95,9 +107,10 @@ export function AppHeader() {
 
           <Avatar className="size-9 border border-border">
             <AvatarFallback className="bg-accent text-xs font-semibold text-accent-foreground">
-              {currentUser.initials}
+              {initials}
             </AvatarFallback>
           </Avatar>
+
         </div>
       </div>
     </header>
