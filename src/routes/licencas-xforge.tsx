@@ -36,6 +36,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { LicenseCreateModal } from "@/components/licenses/LicenseCreateModal";
+import { LicenseDetailsModal } from "@/components/licenses/LicenseDetailsModal";
 
 export const Route = createFileRoute("/licencas-xforge")({
   head: () => ({
