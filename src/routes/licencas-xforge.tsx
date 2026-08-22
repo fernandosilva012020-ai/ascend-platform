@@ -322,10 +322,7 @@ function LicensesPage() {
                   <td colSpan={8} className="px-6 py-12 text-center">
                     <div className="mx-auto flex max-w-[400px] flex-col items-center">
                       <AlertCircle className="size-8 text-destructive" />
-                      <h4 className="mt-4 font-semibold text-foreground">
-                        {error.includes("permissão") ? "Acesso Negado" : "Problema de Autenticação"}
-                      </h4>
-                      <p className="mt-1 text-sm text-muted-foreground text-center">
+                      <p className="mt-4 text-base font-medium text-foreground text-center">
                         {error}
                       </p>
                       {error === "Sessão administrativa não encontrada." || error === "Sessão expirada. Entre novamente." ? (
