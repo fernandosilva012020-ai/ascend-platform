@@ -104,8 +104,8 @@ function LicensesPage() {
       } = await supabase.auth.getSession();
 
       if (!session) {
-        // Redireciona para home (que renderiza login se não autenticado)
-        navigate({ to: "/" });
+        setError("Sessão administrativa não encontrada.");
+        setLoading(false);
         return;
       }
 
@@ -121,13 +121,10 @@ function LicensesPage() {
 
       if (invokeError) {
         if (invokeError.status === 401) {
-          toast.error("Sessão expirada. Entre novamente.");
           setError("Sessão expirada. Entre novamente.");
         } else if (invokeError.status === 403) {
-          toast.error("Esta conta não possui permissão para administrar as licenças XForge.");
           setError("Esta conta não possui permissão para administrar as licenças XForge.");
         } else {
-          toast.error("Não foi possível carregar as licenças. Tente novamente.");
           setError("Não foi possível carregar as licenças. Tente novamente.");
         }
         return;
@@ -325,15 +322,18 @@ function LicensesPage() {
                   <td colSpan={8} className="px-6 py-12 text-center">
                     <div className="mx-auto flex max-w-[400px] flex-col items-center">
                       <AlertCircle className="size-8 text-destructive" />
-                      <h4 className="mt-4 font-semibold text-foreground">
-                        Erro ao carregar dados
-                      </h4>
-                      <p className="mt-1 text-sm text-muted-foreground text-center">
+                      <p className="mt-4 text-base font-medium text-foreground text-center">
                         {error}
                       </p>
-                      <Button variant="outline" className="mt-4" onClick={fetchLicenses}>
-                        Tentar novamente
-                      </Button>
+                      {error === "Sessão administrativa não encontrada." || error === "Sessão expirada. Entre novamente." ? (
+                        <Button variant="premium" className="mt-4" onClick={fetchLicenses}>
+                          Entrar novamente
+                        </Button>
+                      ) : (
+                        <Button variant="outline" className="mt-4" onClick={fetchLicenses}>
+                          Tentar novamente
+                        </Button>
+                      )}
                     </div>
                   </td>
                 </tr>
