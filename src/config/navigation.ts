@@ -15,6 +15,7 @@ import {
   LayoutGrid,
   CreditCard,
   Settings,
+  Key,
   type LucideIcon,
 } from "lucide-react";
 
@@ -119,6 +120,12 @@ export const navGroups: NavGroup[] = [
         url: "/relatorios",
         icon: TrendingUp,
         description: "Indicadores e desempenho detalhado.",
+      },
+      {
+        title: "Licenças XForge",
+        url: "/licencas-xforge",
+        icon: Key,
+        description: "Gerenciamento de licenças XForge Pro.",
       },
     ],
   },
