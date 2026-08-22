@@ -313,7 +313,7 @@ function LicensesPage() {
                       <p className="mt-1 text-sm text-muted-foreground">
                         Crie sua primeira licença XForge Pro para começar.
                       </p>
-                      <Button variant="outline" className="mt-4 gap-2">
+                      <Button variant="outline" className="mt-4 gap-2" onClick={() => setIsCreateModalOpen(true)}>
                         <Plus className="size-4" /> Criar primeira licença
                       </Button>
                     </div>
