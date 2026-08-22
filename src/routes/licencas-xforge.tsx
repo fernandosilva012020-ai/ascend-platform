@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import {
   Key,
@@ -326,8 +326,8 @@ function LicensesPage() {
                         {error}
                       </p>
                       {error === "Sessão administrativa não encontrada." || error === "Sessão expirada. Entre novamente." ? (
-                        <Button variant="premium" className="mt-4" onClick={fetchLicenses}>
-                          Entrar novamente
+                        <Button variant="premium" className="mt-4" asChild>
+                          <Link to="/">Entrar novamente</Link>
                         </Button>
                       ) : (
                         <Button variant="outline" className="mt-4" onClick={fetchLicenses}>
