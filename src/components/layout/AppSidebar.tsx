@@ -75,7 +75,7 @@ export function AppSidebar() {
                         <Link 
                           to={item.url} 
                           onClick={() => setOpenMobile(false)}
-                          className="flex w-full items-center gap-2"
+                          className="flex items-center gap-2"
                         >
                           <item.icon
                             className={cn("size-4 shrink-0", active && "text-sidebar-primary")}
