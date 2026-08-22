@@ -265,7 +265,10 @@ function LicensesPage() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-48">
-                          <DropdownMenuItem className="gap-2">
+                          <DropdownMenuItem className="gap-2" onClick={() => {
+                            setSelectedLicense(license);
+                            setIsDetailsModalOpen(true);
+                          }}>
                             <Eye className="size-4" /> Ver detalhes
                           </DropdownMenuItem>
                           <DropdownMenuItem className="gap-2" onClick={() => copyCode(license.code)}>
