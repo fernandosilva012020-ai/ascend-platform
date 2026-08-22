@@ -96,50 +96,42 @@ function Dashboard() {
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6">
       <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-6 text-blue-500 mb-6">
-        <h2 className="text-xl font-bold mb-2">Verificar estrutura XForge no backend atual</h2>
-        <p className="mb-4 font-semibold text-destructive">Não altere nenhum arquivo, tabela ou função ainda.</p>
+        <h2 className="text-xl font-bold mb-2">Diagnóstico da Conexão Supabase</h2>
+        <p className="mb-4 font-semibold text-destructive">Agora que o Supabase externo foi conectado ao projeto, NÃO faça nenhuma alteração.</p>
         
         <div className="space-y-4 text-sm opacity-90">
-          <p>No backend atual do Projeto X V2, inspecione as tabelas:</p>
-          <ul className="list-disc pl-5 space-y-1">
-            <li>extension_licenses</li>
-            <li>extension_license_devices</li>
-            <li>user_roles</li>
-            <li>profiles</li>
-          </ul>
+          <p>Quero apenas confirmar qual Supabase o Projeto X V2 está usando neste momento.</p>
           
-          <p className="mt-4">Informe exatamente:</p>
-          <ol className="list-decimal pl-5 space-y-1">
-            <li>Todas as colunas de <code>extension_licenses</code> com seus tipos.</li>
-            <li>Todas as colunas de <code>extension_license_devices</code> com seus tipos.</li>
-            <li>Todas as colunas de <code>user_roles</code> com seus tipos.</li>
-            <li>Todas as colunas de <code>profiles</code> com seus tipos.</li>
-            <li>Relacionamentos/chaves estrangeiras entre essas tabelas.</li>
-            <li>Políticas RLS existentes.</li>
-            <li>Se já existe alguma função de validação de licença.</li>
-            <li>Se já existe alguma função administrativa para criar, bloquear, reativar ou resetar licenças.</li>
-            <li>Se o usuário <code>fernandosilvamarketing@gmail.com</code> existe no Auth desse backend.</li>
-            <li>Qual papel/role esse usuário possui atualmente.</li>
+          <p className="mt-4 font-bold">Verifique:</p>
+          <ol className="list-decimal pl-5 space-y-2">
+            <li>Qual é o SUPABASE_URL atual utilizado pelo frontend.</li>
+            <li>Qual é o project ref atual.</li>
+            <li>Confirme se é exatamente: <strong>jddgebxqwmxngfitcftb</strong></li>
+            <li>Verifique <code>src/integrations/supabase/client.ts</code> e informe se ele já aponta para esse projeto.</li>
+            <li>Confirme se as rotas:
+              <ul className="list-disc pl-5 mt-1">
+                <li>/login</li>
+                <li>/forgot-password</li>
+                <li>/update-password</li>
+              </ul>
+              usam esse mesmo cliente Supabase.
+            </li>
+            <li>Confirme se <code>supabase.auth.getSession()</code> agora consulta o projeto <strong>jddgebxqwmxngfitcftb</strong>.</li>
+            <li>Informe se ainda existe alguma referência ao backend anterior <strong>rkbxtymtjnlxd1awmscb</strong>.</li>
           </ol>
           
           <div className="pt-4 border-t border-blue-500/20">
-            <p className="font-bold">IMPORTANTE:</p>
-            <ul className="list-disc pl-5 space-y-1">
-              <li>Não criar nada.</li>
-              <li>Não modificar nada.</li>
-              <li>Não excluir nada.</li>
-              <li>Não alterar autenticação.</li>
-              <li>Não mostrar chaves secretas.</li>
-              <li>Apenas responder com o diagnóstico técnico da estrutura atual.</li>
+            <p className="font-bold text-xs uppercase tracking-wider mb-2">Restrições:</p>
+            <ul className="list-disc pl-5 space-y-1 text-xs">
+              <li>Não alterar arquivos.</li>
+              <li>Não migrar dados.</li>
+              <li>Não criar tabelas.</li>
+              <li>Não revelar chaves secretas.</li>
+              <li>Apenas responder com o diagnóstico.</li>
             </ul>
           </div>
-
-          <div className="mt-4 p-4 bg-primary/5 rounded-lg border border-primary/10">
-            <p className="font-bold">Objetivo:</p>
-            <p>Adaptar o XForge Pro ao backend que o Projeto X V2 já utiliza, sem recriar estruturas desnecessárias.</p>
-          </div>
           
-          <p className="font-bold mt-4 italic text-xs uppercase tracking-wider">
+          <p className="font-bold mt-4 italic text-xs uppercase tracking-wider text-destructive">
             IMPORTANTE: Execute TODOS os detalhes desta tarefa com máxima precisão. Não ignore nada, não simplifique, implemente EXATAMENTE o que foi pedido.
           </p>
         </div>
