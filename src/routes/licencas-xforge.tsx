@@ -104,7 +104,9 @@ function LicensesPage() {
       } = await supabase.auth.getSession();
 
       if (!session) {
-        console.log("No session found, but skipping redirect for debugging");
+        // Redireciona para home (que renderiza login se não autenticado)
+        navigate({ to: "/" });
+        return;
       }
 
       const { data, error: invokeError } = await supabase.functions.invoke(
@@ -112,7 +114,7 @@ function LicensesPage() {
         {
           body: { action: "list" },
           headers: {
-            Authorization: `Bearer ${session?.access_token || ""}`,
+            Authorization: `Bearer ${session.access_token}`,
           },
         }
       );
