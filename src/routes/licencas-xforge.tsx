@@ -1,10 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import {
   Key,
   Plus,
   Search,
-  Filter,
   CheckCircle2,
   AlertCircle,
   Clock,
@@ -17,6 +16,7 @@ import {
   Edit,
   Trash,
   Eye,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,6 +38,7 @@ import {
 import { toast } from "sonner";
 import { LicenseCreateModal } from "@/components/licenses/LicenseCreateModal";
 import { LicenseDetailsModal } from "@/components/licenses/LicenseDetailsModal";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/licencas-xforge")({
   head: () => ({
@@ -52,77 +53,152 @@ export const Route = createFileRoute("/licencas-xforge")({
   component: LicensesPage,
 });
 
-type LicenseStatus = "Ativa" | "Bloqueada" | "Expirada";
-type LicensePlan = "Básico" | "PRO" | "Premium" | "Teste";
+type LicenseStatus = "active" | "expired" | "suspended" | "revoked";
 
 interface License {
   id: string;
-  client: string;
-  code: string;
-  plan: LicensePlan;
-  status: LicenseStatus;
-  validity: string;
-  devices: string;
-  lastAccess: string;
+  user_name: string;
+  key_preview: string;
+  plan: string;
+  display_status: LicenseStatus;
+  lifetime: boolean;
+  expires_at: string | null;
+  device_count: number;
+  max_devices: number;
+  last_validated_at: string | null;
 }
 
-const mockLicenses: License[] = [
-  {
-    id: "1",
-    client: "Fernando",
-    code: "FNX-XXXX-XXXX-0001",
-    plan: "PRO",
-    status: "Ativa",
-    validity: "Vitalícia",
-    devices: "1 / 1",
-    lastAccess: "Agora",
-  },
-  {
-    id: "2",
-    client: "Maria Silva",
-    code: "XFG-4829-1928-0922",
-    plan: "Premium",
-    status: "Ativa",
-    validity: "365 dias",
-    devices: "2 / 3",
-    lastAccess: "há 2 horas",
-  },
-  {
-    id: "3",
-    client: "João Rocha",
-    code: "XFG-9921-0021-8812",
-    plan: "Básico",
-    status: "Expirada",
-    validity: "30 dias",
-    devices: "1 / 1",
-    lastAccess: "há 5 dias",
-  },
-  {
-    id: "4",
-    client: "Lucas Oliveira",
-    code: "XFG-7721-1123-5561",
-    plan: "Teste",
-    status: "Bloqueada",
-    validity: "7 dias",
-    devices: "0 / 1",
-    lastAccess: "há 1 semana",
-  },
-];
+interface Metrics {
+  active: number;
+  expired: number;
+  blocked: number;
+  devices: number;
+}
 
 function LicensesPage() {
+  const navigate = useNavigate();
+  const [licenses, setLicenses] = useState<License[]>([]);
+  const [metrics, setMetrics] = useState<Metrics>({
+    active: 0,
+    expired: 0,
+    blocked: 0,
+    devices: 0,
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [planFilter, setPlanFilter] = useState("all");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [selectedLicense, setSelectedLicense] = useState<License | null>(null);
+  const [selectedLicense, setSelectedLicense] = useState<any>(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
-  const filteredLicenses = mockLicenses.filter((l) => {
+  const fetchLicenses = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        navigate({ to: "/auth" }); // Changed to /auth as it's common in Lovable projects
+        return;
+      }
+
+      const { data, error: invokeError } = await supabase.functions.invoke(
+        "xforge-admin",
+        {
+          body: { action: "list" },
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        }
+      );
+
+      if (invokeError) {
+        if (invokeError.status === 401) {
+          toast.error("Sessão expirada. Entre novamente.");
+          setError("Sessão expirada. Entre novamente.");
+        } else if (invokeError.status === 403) {
+          toast.error("Esta conta não possui permissão para administrar as licenças XForge.");
+          setError("Esta conta não possui permissão para administrar as licenças XForge.");
+        } else {
+          toast.error("Não foi possível carregar as licenças. Tente novamente.");
+          setError("Não foi possível carregar as licenças. Tente novamente.");
+        }
+        return;
+      }
+
+      if (data?.ok) {
+        setLicenses(data.licenses || []);
+        setMetrics(data.metrics || { active: 0, expired: 0, blocked: 0, devices: 0 });
+      } else {
+        toast.error("Não foi possível carregar as licenças. Tente novamente.");
+        setError("Não foi possível carregar as licenças. Tente novamente.");
+      }
+    } catch (err) {
+      console.error("Error fetching licenses:", err);
+      toast.error("Não foi possível carregar as licenças. Tente novamente.");
+      setError("Não foi possível carregar as licenças. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchLicenses();
+  }, []);
+
+  const getStatusLabel = (status: LicenseStatus) => {
+    switch (status) {
+      case "active":
+        return "Ativa";
+      case "expired":
+        return "Expirada";
+      case "suspended":
+      case "revoked":
+        return "Bloqueada";
+      default:
+        return status;
+    }
+  };
+
+  const getStatusColor = (status: LicenseStatus) => {
+    switch (status) {
+      case "active":
+        return "bg-success/10 text-success";
+      case "expired":
+        return "bg-warning/10 text-warning";
+      case "suspended":
+      case "revoked":
+        return "bg-destructive/10 text-destructive";
+      default:
+        return "";
+    }
+  };
+
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return "Nunca";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
+  const filteredLicenses = licenses.filter((l) => {
     const matchesSearch =
-      l.client.toLowerCase().includes(search.toLowerCase()) ||
-      l.code.toLowerCase().includes(search.toLowerCase());
-    const matchesStatus = statusFilter === "all" || l.status === statusFilter;
+      l.user_name.toLowerCase().includes(search.toLowerCase()) ||
+      l.key_preview.toLowerCase().includes(search.toLowerCase());
+    
+    const mappedStatus = getStatusLabel(l.display_status);
+    const matchesStatus = statusFilter === "all" || mappedStatus === statusFilter;
     const matchesPlan = planFilter === "all" || l.plan === planFilter;
+    
     return matchesSearch && matchesStatus && matchesPlan;
   });
 
@@ -150,16 +226,20 @@ function LicensesPage() {
 
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
-          { label: "Licenças Ativas", value: "128", icon: CheckCircle2, color: "text-success" },
-          { label: "Licenças Expiradas", value: "14", icon: Clock, color: "text-warning" },
-          { label: "Licenças Bloqueadas", value: "3", icon: AlertCircle, color: "text-destructive" },
-          { label: "Dispositivos Ativos", value: "245", icon: Laptop, color: "text-primary" },
+          { label: "Licenças Ativas", value: metrics.active, icon: CheckCircle2, color: "text-success" },
+          { label: "Licenças Expiradas", value: metrics.expired, icon: Clock, color: "text-warning" },
+          { label: "Licenças Bloqueadas", value: metrics.blocked, icon: AlertCircle, color: "text-destructive" },
+          { label: "Dispositivos Ativos", value: metrics.devices, icon: Laptop, color: "text-primary" },
         ].map((stat) => (
           <div key={stat.label} className="surface-card p-5">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">{stat.label}</p>
-                <p className="mt-2 font-display text-2xl font-bold">{stat.value}</p>
+                {loading ? (
+                   <div className="mt-2 h-8 w-16 animate-pulse rounded bg-muted" />
+                ) : (
+                  <p className="mt-2 font-display text-2xl font-bold">{stat.value}</p>
+                )}
               </div>
               <span className={`grid size-10 place-items-center rounded-xl bg-accent ${stat.color}`}>
                 <stat.icon className="size-5" />
@@ -230,11 +310,37 @@ function LicensesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {filteredLicenses.length > 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={8} className="px-6 py-12 text-center">
+                    <div className="flex flex-col items-center justify-center gap-3">
+                      <Loader2 className="size-8 animate-spin text-primary" />
+                      <p className="text-sm text-muted-foreground">Carregando licenças...</p>
+                    </div>
+                  </td>
+                </tr>
+              ) : error ? (
+                <tr>
+                  <td colSpan={8} className="px-6 py-12 text-center">
+                    <div className="mx-auto flex max-w-[400px] flex-col items-center">
+                      <AlertCircle className="size-8 text-destructive" />
+                      <h4 className="mt-4 font-semibold text-foreground">
+                        Erro ao carregar dados
+                      </h4>
+                      <p className="mt-1 text-sm text-muted-foreground text-center">
+                        {error}
+                      </p>
+                      <Button variant="outline" className="mt-4" onClick={fetchLicenses}>
+                        Tentar novamente
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ) : filteredLicenses.length > 0 ? (
                 filteredLicenses.map((license) => (
                   <tr key={license.id} className="group hover:bg-accent/50">
-                    <td className="px-6 py-4 font-medium">{license.client}</td>
-                    <td className="px-6 py-4 font-mono text-xs opacity-70">{license.code}</td>
+                    <td className="px-6 py-4 font-medium">{license.user_name}</td>
+                    <td className="px-6 py-4 font-mono text-xs opacity-70">{license.key_preview}</td>
                     <td className="px-6 py-4">
                       <Badge variant="outline" className="font-semibold">
                         {license.plan}
@@ -243,20 +349,20 @@ function LicensesPage() {
                     <td className="px-6 py-4">
                       <Badge
                         variant="secondary"
-                        className={
-                          license.status === "Ativa"
-                            ? "bg-success/10 text-success"
-                            : license.status === "Bloqueada"
-                              ? "bg-destructive/10 text-destructive"
-                              : "bg-warning/10 text-warning"
-                        }
+                        className={getStatusColor(license.display_status)}
                       >
-                        {license.status}
+                        {getStatusLabel(license.display_status)}
                       </Badge>
                     </td>
-                    <td className="px-6 py-4 text-muted-foreground">{license.validity}</td>
-                    <td className="px-6 py-4 text-muted-foreground">{license.devices}</td>
-                    <td className="px-6 py-4 text-muted-foreground">{license.lastAccess}</td>
+                    <td className="px-6 py-4 text-muted-foreground">
+                      {license.lifetime ? "Vitalícia" : formatDate(license.expires_at)}
+                    </td>
+                    <td className="px-6 py-4 text-muted-foreground">
+                      {license.device_count} / {license.max_devices}
+                    </td>
+                    <td className="px-6 py-4 text-muted-foreground">
+                      {license.last_validated_at ? formatDate(license.last_validated_at) : "Nunca"}
+                    </td>
                     <td className="px-6 py-4 text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -266,16 +372,25 @@ function LicensesPage() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-48">
                           <DropdownMenuItem className="gap-2" onClick={() => {
-                            setSelectedLicense(license);
+                            // Map back to expected format for modal if needed, or update modal
+                            setSelectedLicense({
+                              ...license,
+                              client: license.user_name,
+                              code: license.key_preview,
+                              status: getStatusLabel(license.display_status),
+                              validity: license.lifetime ? "Vitalícia" : formatDate(license.expires_at),
+                              devices: `${license.device_count} / ${license.max_devices}`,
+                              lastAccess: license.last_validated_at ? formatDate(license.last_validated_at) : "Nunca"
+                            });
                             setIsDetailsModalOpen(true);
                           }}>
                             <Eye className="size-4" /> Ver detalhes
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="gap-2" onClick={() => copyCode(license.code)}>
+                          <DropdownMenuItem className="gap-2" onClick={() => copyCode(license.key_preview)}>
                             <Copy className="size-4" /> Copiar código
                           </DropdownMenuItem>
                           
-                          {license.status === "Ativa" ? (
+                          {license.display_status === "active" ? (
                             <DropdownMenuItem className="gap-2 text-destructive focus:text-destructive">
                               <Lock className="size-4" /> Bloquear
                             </DropdownMenuItem>
