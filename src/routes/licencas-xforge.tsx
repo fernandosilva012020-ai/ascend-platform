@@ -113,6 +113,9 @@ function LicensesPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [planFilter, setPlanFilter] = useState("all");
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [selectedLicense, setSelectedLicense] = useState<License | null>(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
   const filteredLicenses = mockLicenses.filter((l) => {
     const matchesSearch =
