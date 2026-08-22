@@ -126,17 +126,26 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const { location } = useRouterState();
+  const isLoginPage = location.pathname === "/login";
 
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <AppLayout>
-          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-          <Outlet />
-        </AppLayout>
-        <Toaster position="top-right" richColors />
+        {isLoginPage ? (
+          <>
+            <Outlet />
+            <Toaster position="top-right" richColors />
+          </>
+        ) : (
+          <AppLayout>
+            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+            <Outlet />
+            <Toaster position="top-right" richColors />
+          </AppLayout>
+        )}
       </AuthProvider>
     </QueryClientProvider>
-
   );
 }
+
