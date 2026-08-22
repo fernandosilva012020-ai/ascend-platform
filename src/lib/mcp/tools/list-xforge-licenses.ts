@@ -56,13 +56,13 @@ export default defineTool({
 
     const wanted = status && status !== "all" ? status : null;
     if (wanted) {
-      licenses = licenses.filter((l) => String(l.display_status ?? l.status ?? "") === wanted);
+      licenses = licenses.filter((l) => String(l['display_status'] ?? l['status'] ?? "") === wanted);
     }
 
     if (search) {
       const term = search.toLowerCase();
       licenses = licenses.filter((l) =>
-        [l.user_name, l.key_preview, l.license_key]
+        [l['user_name'], l['key_preview'], l['license_key']]
           .filter((v): v is string => typeof v === "string")
           .some((v) => v.toLowerCase().includes(term)),
       );
