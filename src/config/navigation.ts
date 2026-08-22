@@ -15,6 +15,7 @@ import {
   LayoutGrid,
   CreditCard,
   Settings,
+  Key,
   type LucideIcon,
 } from "lucide-react";
 
