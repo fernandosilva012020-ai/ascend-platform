@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
 import {
+
   Key,
   Plus,
   Search,
@@ -77,7 +79,9 @@ interface Metrics {
 
 function LicensesPage() {
   const navigate = useNavigate();
+  const { session, loading: authLoading } = useAuth();
   const [licenses, setLicenses] = useState<License[]>([]);
+
   const [metrics, setMetrics] = useState<Metrics>({
     active: 0,
     expired: 0,
@@ -99,15 +103,12 @@ function LicensesPage() {
       setLoading(true);
       setError(null);
 
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
       if (!session) {
         setError("Sessão administrativa não encontrada.");
         setLoading(false);
         return;
       }
+
 
       const { data, error: invokeError } = await supabase.functions.invoke(
         "xforge-admin",
@@ -147,8 +148,11 @@ function LicensesPage() {
   };
 
   useEffect(() => {
-    fetchLicenses();
-  }, []);
+    if (!authLoading) {
+      fetchLicenses();
+    }
+  }, [authLoading]);
+
 
   const getStatusLabel = (status: LicenseStatus) => {
     switch (status) {
