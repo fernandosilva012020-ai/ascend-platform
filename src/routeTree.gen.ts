@@ -17,6 +17,7 @@ import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as CrmRouteImport } from './routes/crm'
 import { Route as FuncionarioIaRouteImport } from './routes/funcionario-ia'
 import { Route as LandingPagesRouteImport } from './routes/landing-pages'
+import { Route as LicencasXforgeRouteImport } from './routes/licencas-xforge'
 import { Route as LinksInteligentesRouteImport } from './routes/links-inteligentes'
 import { Route as LojaRouteImport } from './routes/loja'
 import { Route as MarketingRouteImport } from './routes/marketing'
@@ -64,6 +65,11 @@ const FuncionarioIaRoute = FuncionarioIaRouteImport.update({
 const LandingPagesRoute = LandingPagesRouteImport.update({
   id: '/landing-pages',
   path: '/landing-pages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LicencasXforgeRoute = LicencasXforgeRouteImport.update({
+  id: '/licencas-xforge',
+  path: '/licencas-xforge',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LinksInteligentesRoute = LinksInteligentesRouteImport.update({
@@ -116,6 +122,7 @@ export interface FileRoutesByFullPath {
   '/crm': typeof CrmRoute
   '/funcionario-ia': typeof FuncionarioIaRoute
   '/landing-pages': typeof LandingPagesRoute
+  '/licencas-xforge': typeof LicencasXforgeRoute
   '/links-inteligentes': typeof LinksInteligentesRoute
   '/loja': typeof LojaRoute
   '/marketing': typeof MarketingRoute
@@ -134,6 +141,7 @@ export interface FileRoutesByTo {
   '/crm': typeof CrmRoute
   '/funcionario-ia': typeof FuncionarioIaRoute
   '/landing-pages': typeof LandingPagesRoute
+  '/licencas-xforge': typeof LicencasXforgeRoute
   '/links-inteligentes': typeof LinksInteligentesRoute
   '/loja': typeof LojaRoute
   '/marketing': typeof MarketingRoute
@@ -153,6 +161,7 @@ export interface FileRoutesById {
   '/crm': typeof CrmRoute
   '/funcionario-ia': typeof FuncionarioIaRoute
   '/landing-pages': typeof LandingPagesRoute
+  '/licencas-xforge': typeof LicencasXforgeRoute
   '/links-inteligentes': typeof LinksInteligentesRoute
   '/loja': typeof LojaRoute
   '/marketing': typeof MarketingRoute
@@ -173,6 +182,7 @@ export interface FileRouteTypes {
     | '/crm'
     | '/funcionario-ia'
     | '/landing-pages'
+    | '/licencas-xforge'
     | '/links-inteligentes'
     | '/loja'
     | '/marketing'
@@ -191,6 +201,7 @@ export interface FileRouteTypes {
     | '/crm'
     | '/funcionario-ia'
     | '/landing-pages'
+    | '/licencas-xforge'
     | '/links-inteligentes'
     | '/loja'
     | '/marketing'
@@ -209,6 +220,7 @@ export interface FileRouteTypes {
     | '/crm'
     | '/funcionario-ia'
     | '/landing-pages'
+    | '/licencas-xforge'
     | '/links-inteligentes'
     | '/loja'
     | '/marketing'
@@ -228,6 +240,7 @@ export interface RootRouteChildren {
   CrmRoute: typeof CrmRoute
   FuncionarioIaRoute: typeof FuncionarioIaRoute
   LandingPagesRoute: typeof LandingPagesRoute
+  LicencasXforgeRoute: typeof LicencasXforgeRoute
   LinksInteligentesRoute: typeof LinksInteligentesRoute
   LojaRoute: typeof LojaRoute
   MarketingRoute: typeof MarketingRoute
@@ -294,6 +307,13 @@ declare module '@tanstack/react-router' {
       path: '/landing-pages'
       fullPath: '/landing-pages'
       preLoaderRoute: typeof LandingPagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/licencas-xforge': {
+      id: '/licencas-xforge'
+      path: '/licencas-xforge'
+      fullPath: '/licencas-xforge'
+      preLoaderRoute: typeof LicencasXforgeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/links-inteligentes': {
@@ -364,6 +384,7 @@ const rootRouteChildren: RootRouteChildren = {
   CrmRoute: CrmRoute,
   FuncionarioIaRoute: FuncionarioIaRoute,
   LandingPagesRoute: LandingPagesRoute,
+  LicencasXforgeRoute: LicencasXforgeRoute,
   LinksInteligentesRoute: LinksInteligentesRoute,
   LojaRoute: LojaRoute,
   MarketingRoute: MarketingRoute,
