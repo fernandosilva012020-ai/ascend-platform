@@ -72,7 +72,7 @@ function ForgotPasswordPage() {
           {submitted ? (
             <div className="space-y-6">
               <div className="rounded-xl bg-primary/10 p-4 text-center text-sm text-primary">
-                Enviamos um link para redefinir sua senha. Verifique sua caixa de entrada e também a pasta de spam.
+                Se este e-mail estiver cadastrado, enviaremos um link para redefinir sua senha.
               </div>
               <Button asChild variant="outline" className="w-full">
                 <Link to="/login">
