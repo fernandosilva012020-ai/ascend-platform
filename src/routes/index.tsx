@@ -95,39 +95,49 @@ function Dashboard() {
 
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6">
-      <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-6 text-yellow-500 mb-6">
-        <h2 className="text-xl font-bold mb-2">Diagnóstico da conexão Supabase do Projeto X V2</h2>
-        <p className="mb-4">NÃO altere nenhum arquivo ainda.</p>
-        <p className="mb-4">Quero apenas diagnosticar qual projeto Supabase este aplicativo está realmente usando.</p>
+      <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-6 text-blue-500 mb-6">
+        <h2 className="text-xl font-bold mb-2">Auditar Supabase atual antes da migração</h2>
+        <p className="mb-4 font-semibold text-destructive">NÃO altere nenhuma configuração ou arquivo ainda.</p>
+        
         <div className="space-y-4 text-sm opacity-90">
-          <p>Inspecione:</p>
+          <p>O diagnóstico confirmou que o Projeto X V2 está conectado a um projeto Supabase diferente do projeto oficial desejado:</p>
+          <p className="font-mono bg-blue-500/20 px-2 py-1 rounded inline-block">jddgebxqwmxngfitcftb</p>
+          
+          <p className="mt-4 font-medium">Antes de trocar qualquer conexão, faça uma auditoria do Supabase atualmente usado pelo aplicativo.</p>
+          
+          <p>Informe:</p>
           <ul className="list-disc pl-5 space-y-1">
-            <li>src/integrations/supabase/client.ts</li>
-            <li>variáveis de ambiente Supabase</li>
-            <li>qualquer outro arquivo que inicialize createClient()</li>
+            <li>O project ref atual usado pelo frontend.</li>
+            <li>Quais tabelas do Supabase atual são utilizadas pelo Projeto X V2.</li>
+            <li>Quais páginas/componentes consultam essas tabelas.</li>
+            <li>Se existem dados reais já persistidos nessas tabelas ou apenas dados de demonstração/mock.</li>
+            <li>Quais recursos usam Supabase Auth.</li>
+            <li>Quais Edge Functions do projeto atual são utilizadas pelo frontend.</li>
+            <li>Quais Storage Buckets são utilizados.</li>
+            <li>Quais arquivos dependem diretamente das variáveis de ambiente do Supabase atual.</li>
+            <li>Se trocar a URL e a publishable key pelo projeto jddgebxqwmxngfitcftb quebraria algum módulo existente.</li>
+            <li>Liste exatamente o que precisaria ser migrado antes da troca.</li>
           </ul>
           
-          <p>Informe claramente:</p>
-          <ul className="list-disc pl-5 space-y-1">
-            <li>Qual é o valor/configuração de SUPABASE_URL usada pelo frontend.</li>
-            <li>Qual é o project ref extraído dessa URL.</li>
-            <li>Confirme se o project ref é exatamente: <strong>jddgebxqwmxngfitcftb</strong></li>
-            <li>Informe se existe mais de um cliente Supabase no projeto.</li>
-            <li>Informe se /forgot-password importa exatamente esse mesmo cliente.</li>
-            <li>Confirme se o botão de recuperação realmente chama: <code>supabase.auth.resetPasswordForEmail(...)</code></li>
-            <li>Informe em qual arquivo e linha aproximada essa chamada está.</li>
-          </ul>
-          
-          <div className="pt-4 border-t border-yellow-500/20">
+          <div className="pt-4 border-t border-blue-500/20">
             <p className="font-bold">IMPORTANTE:</p>
             <ul className="list-disc pl-5 space-y-1">
-              <li>Não mostrar nem expor service_role.</li>
-              <li>Não mostrar chaves secretas.</li>
-              <li>Não modificar código.</li>
-              <li>Não criar novo Supabase.</li>
-              <li>Apenas analisar e responder com o diagnóstico.</li>
+              <li>Não alterar URLs.</li>
+              <li>Não alterar chaves.</li>
+              <li>Não modificar client.ts.</li>
+              <li>Não criar nem apagar tabelas.</li>
+              <li>Não alterar autenticação.</li>
+              <li>Não desconectar o Supabase atual.</li>
+              <li>Não revelar service_role ou outras chaves secretas.</li>
+              <li>Apenas analisar e responder.</li>
             </ul>
           </div>
+
+          <div className="mt-4 p-4 bg-primary/5 rounded-lg border border-primary/10">
+            <p className="font-bold">Objetivo final:</p>
+            <p>Planejar uma migração segura para que o Projeto X V2, login, painel administrativo e XForge Pro utilizem o mesmo Supabase oficial <strong>jddgebxqwmxngfitcftb</strong>, sem quebrar funcionalidades existentes.</p>
+          </div>
+          
           <p className="font-bold mt-4 italic text-xs uppercase tracking-wider">
             IMPORTANTE: Execute TODOS os detalhes desta tarefa com máxima precisão. Não ignore nada, não simplifique, implemente EXATAMENTE o que foi pedido.
           </p>
