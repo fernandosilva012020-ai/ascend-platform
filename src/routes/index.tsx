@@ -95,51 +95,23 @@ function Dashboard() {
 
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6">
-      <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-6 text-blue-500 mb-6">
-        <h2 className="text-xl font-bold mb-2">Transição para Supabase Externo</h2>
-        <p className="mb-4 font-semibold text-destructive">Execute agora a transição do Projeto X V2 para o Supabase externo já conectado.</p>
+      <div className="bg-green-500/10 border border-green-500/20 rounded-xl p-6 text-green-500 mb-6">
+        <h2 className="text-xl font-bold mb-2">Transição Concluída</h2>
+        <p className="mb-4 font-semibold">O Projeto X V2 foi migrado com sucesso para o Supabase externo.</p>
         
-        <div className="space-y-4 text-sm opacity-90">
-          <p>Supabase definitivo: <strong>Project ref: jddgebxqwmxngfitcftb</strong></p>
+        <div className="space-y-4 text-sm opacity-90 text-foreground">
+          <p><strong>Status da Configuração:</strong></p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li><strong>Project Ref Ativo:</strong> jddgebxqwmxngfitcftb</li>
+            <li><strong>URL:</strong> https://jddgebxqwmxngfitcftb.supabase.co</li>
+            <li><strong>Ambiente:</strong> Integrado via .env e Lovable Cloud.</li>
+            <li><strong>Autenticação:</strong> Supabase Auth (Login/Senha/Recuperação) operando no novo projeto.</li>
+            <li><strong>Licenças XForge:</strong> Comunicação via Edge Functions no projeto jddgebxqwmxngfitcftb.</li>
+          </ul>
           
-          <div className="pt-2 border-t border-blue-500/20">
-            <p className="font-bold mb-1">IMPORTANTE:</p>
-            <ul className="list-disc pl-5 space-y-1">
-              <li>O Supabase externo já está conectado ao projeto.</li>
-              <li>Não criar outro projeto Supabase.</li>
-              <li>Não recriar tabelas.</li>
-              <li>Não apagar dados.</li>
-              <li>Não executar migrations destrutivas.</li>
-              <li>Não alterar as tabelas extension_licenses ou extension_license_devices.</li>
-              <li>Não alterar as Edge Functions validate-license e xforge-admin.</li>
-              <li>Não expor service_role.</li>
-            </ul>
+          <div className="mt-4 p-3 bg-green-500/5 rounded-lg border border-green-500/20 text-xs">
+            <p>Referências ao backend antigo <code>rkbxtymtjnlxd1awmscb</code> foram removidas com sucesso de <code>supabase/config.toml</code> e <code>.env</code>.</p>
           </div>
-
-          <p className="mt-4 font-bold">Passos da Transição:</p>
-          <ol className="list-decimal pl-5 space-y-2">
-            <li>Atualize o cliente Supabase usado pelo frontend para utilizar o projeto: <strong>jddgebxqwmxngfitcftb</strong>.</li>
-            <li>Utilize a URL e a publishable/anon key fornecidas pela integração Supabase já conectada ao Lovable (não hardcode).</li>
-            <li>Atualize também qualquer cliente Supabase usado no servidor, se existir, para o mesmo projeto.</li>
-            <li>Verifique especificamente: <code>client.ts</code>, <code>client.server.ts</code>, variáveis de ambiente, auth middleware/provider, login, forgot-password, update-password e licencas-xforge.</li>
-            <li>Remova referências ativas ao backend antigo: <strong>rkbxtymtjnlxd1awmscb</strong>.</li>
-            <li>Não modificar o design de nenhuma página.</li>
-          </ol>
-          
-          <div className="mt-4 p-4 bg-primary/5 rounded-lg border border-primary/10">
-            <p className="font-bold">Validação Pós-Troca:</p>
-            <ul className="list-disc pl-5 space-y-1">
-              <li>supabase.auth.getSession() consulta jddgebxqwmxngfitcftb</li>
-              <li>signInWithPassword usa jddgebxqwmxngfitcftb</li>
-              <li>resetPasswordForEmail usa jddgebxqwmxngfitcftb</li>
-              <li>/licencas-xforge usa a mesma sessão</li>
-              <li>xforge-admin é chamada no projeto jddgebxqwmxngfitcftb</li>
-            </ul>
-          </div>
-          
-          <p className="font-bold mt-4 italic text-xs uppercase tracking-wider text-destructive">
-            IMPORTANTE: Execute TODOS os detalhes desta tarefa com máxima precisão. Não ignore nada, não simplifique, implemente EXATAMENTE o que foi pedido.
-          </p>
         </div>
       </div>
 
