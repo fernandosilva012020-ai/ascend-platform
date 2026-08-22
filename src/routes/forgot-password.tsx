@@ -18,24 +18,32 @@ function ForgotPasswordPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!email.trim()) {
+      toast.error("Por favor, informe seu e-mail.");
+      return;
+    }
+
     setLoading(true);
+    console.log("Iniciando processo de recuperação de senha para:", email.trim());
 
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
         redirectTo: `${window.location.origin}/update-password`,
       });
 
       if (error) {
-        toast.error("Erro ao enviar link", {
+        console.error("Erro completo do Supabase Auth:", error);
+        toast.error("Não foi possível carregar as licenças. Tente novamente.", {
           description: error.message,
         });
       } else {
+        console.log("Chamada resetPasswordForEmail executada com sucesso.");
         setSubmitted(true);
-        toast.success("Link enviado com sucesso!");
       }
     } catch (err) {
+      console.error("Erro inesperado durante a recuperação de senha:", err);
       toast.error("Ocorreu um erro inesperado");
-      console.error(err);
     } finally {
       setLoading(false);
     }
