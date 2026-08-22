@@ -324,6 +324,20 @@ function LicensesPage() {
           </table>
         </div>
       </section>
+
+      <LicenseCreateModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+      />
+
+      <LicenseDetailsModal
+        isOpen={isDetailsModalOpen}
+        onClose={() => {
+          setIsDetailsModalOpen(false);
+          setSelectedLicense(null);
+        }}
+        license={selectedLicense}
+      />
     </div>
   );
 }
