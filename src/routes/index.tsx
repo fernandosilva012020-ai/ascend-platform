@@ -95,45 +95,25 @@ function Dashboard() {
 
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6">
-      <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-6 text-blue-500 mb-6">
-        <h2 className="text-xl font-bold mb-2">Diagnóstico da Conexão Supabase</h2>
-        <p className="mb-4 font-semibold text-destructive">Agora que o Supabase externo foi conectado ao projeto, NÃO faça nenhuma alteração.</p>
+      <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-6 text-red-500 mb-6">
+        <h2 className="text-xl font-bold mb-2">Impedimento de Transição Direta</h2>
+        <p className="mb-4 font-semibold">A transição automática para o projeto <code>jddgebxqwmxngfitcftb</code> via manipulação de arquivos foi bloqueada por segurança.</p>
         
-        <div className="space-y-4 text-sm opacity-90">
-          <p>Quero apenas confirmar qual Supabase o Projeto X V2 está usando neste momento.</p>
+        <div className="space-y-4 text-sm opacity-90 text-foreground">
+          <p>Para migrar o Projeto X V2 para o Supabase externo, siga estes passos obrigatórios:</p>
           
-          <p className="mt-4 font-bold">Verifique:</p>
           <ol className="list-decimal pl-5 space-y-2">
-            <li>Qual é o SUPABASE_URL atual utilizado pelo frontend.</li>
-            <li>Qual é o project ref atual.</li>
-            <li>Confirme se é exatamente: <strong>jddgebxqwmxngfitcftb</strong></li>
-            <li>Verifique <code>src/integrations/supabase/client.ts</code> e informe se ele já aponta para esse projeto.</li>
-            <li>Confirme se as rotas:
-              <ul className="list-disc pl-5 mt-1">
-                <li>/login</li>
-                <li>/forgot-password</li>
-                <li>/update-password</li>
-              </ul>
-              usam esse mesmo cliente Supabase.
-            </li>
-            <li>Confirme se <code>supabase.auth.getSession()</code> agora consulta o projeto <strong>jddgebxqwmxngfitcftb</strong>.</li>
-            <li>Informe se ainda existe alguma referência ao backend anterior <strong>rkbxtymtjnlxd1awmscb</strong>.</li>
+            <li>Vá em <strong>Configurações do Projeto &gt; Integrações</strong> no painel do Lovable.</li>
+            <li>Localize a integração do <strong>Supabase</strong>.</li>
+            <li>Desconecte o projeto atual <code>rkbxtymtjnlxdlawmscb</code> (Lovable Cloud).</li>
+            <li>Conecte o projeto externo <code>jddgebxqwmxngfitcftb</code> fornecendo as credenciais solicitadas pela interface do Lovable.</li>
+            <li>Após a conexão bem-sucedida, o Lovable injetará automaticamente as novas variáveis de ambiente.</li>
           </ol>
           
-          <div className="pt-4 border-t border-blue-500/20">
-            <p className="font-bold text-xs uppercase tracking-wider mb-2">Restrições:</p>
-            <ul className="list-disc pl-5 space-y-1 text-xs">
-              <li>Não alterar arquivos.</li>
-              <li>Não migrar dados.</li>
-              <li>Não criar tabelas.</li>
-              <li>Não revelar chaves secretas.</li>
-              <li>Apenas responder com o diagnóstico.</li>
-            </ul>
+          <div className="mt-4 p-3 bg-red-500/5 rounded-lg border border-red-500/20 text-xs text-destructive">
+            <p className="font-bold">Por que isso é necessário?</p>
+            <p>O sandbox do Lovable utiliza variáveis protegidas que não podem ser sobrescritas manualmente via <code>.env</code> ou <code>config.toml</code> para evitar quebra de infraestrutura. A troca deve ser feita pelo Painel de Controle do Lovable.</p>
           </div>
-          
-          <p className="font-bold mt-4 italic text-xs uppercase tracking-wider text-destructive">
-            IMPORTANTE: Execute TODOS os detalhes desta tarefa com máxima precisão. Não ignore nada, não simplifique, implemente EXATAMENTE o que foi pedido.
-          </p>
         </div>
       </div>
 
