@@ -96,38 +96,44 @@ function Dashboard() {
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6">
       <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-6 text-blue-500 mb-6">
-        <h2 className="text-xl font-bold mb-2">Diagnóstico da Conexão Supabase</h2>
-        <p className="mb-4 font-semibold text-destructive">Agora que o Supabase externo foi conectado ao projeto, NÃO faça nenhuma alteração.</p>
+        <h2 className="text-xl font-bold mb-2">Transição para Supabase Externo</h2>
+        <p className="mb-4 font-semibold text-destructive">Execute agora a transição do Projeto X V2 para o Supabase externo já conectado.</p>
         
         <div className="space-y-4 text-sm opacity-90">
-          <p>Quero apenas confirmar qual Supabase o Projeto X V2 está usando neste momento.</p>
+          <p>Supabase definitivo: <strong>Project ref: jddgebxqwmxngfitcftb</strong></p>
           
-          <p className="mt-4 font-bold">Verifique:</p>
+          <div className="pt-2 border-t border-blue-500/20">
+            <p className="font-bold mb-1">IMPORTANTE:</p>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>O Supabase externo já está conectado ao projeto.</li>
+              <li>Não criar outro projeto Supabase.</li>
+              <li>Não recriar tabelas.</li>
+              <li>Não apagar dados.</li>
+              <li>Não executar migrations destrutivas.</li>
+              <li>Não alterar as tabelas extension_licenses ou extension_license_devices.</li>
+              <li>Não alterar as Edge Functions validate-license e xforge-admin.</li>
+              <li>Não expor service_role.</li>
+            </ul>
+          </div>
+
+          <p className="mt-4 font-bold">Passos da Transição:</p>
           <ol className="list-decimal pl-5 space-y-2">
-            <li>Qual é o SUPABASE_URL atual utilizado pelo frontend.</li>
-            <li>Qual é o project ref atual.</li>
-            <li>Confirme se é exatamente: <strong>jddgebxqwmxngfitcftb</strong></li>
-            <li>Verifique <code>src/integrations/supabase/client.ts</code> e informe se ele já aponta para esse projeto.</li>
-            <li>Confirme se as rotas:
-              <ul className="list-disc pl-5 mt-1">
-                <li>/login</li>
-                <li>/forgot-password</li>
-                <li>/update-password</li>
-              </ul>
-              usam esse mesmo cliente Supabase.
-            </li>
-            <li>Confirme se <code>supabase.auth.getSession()</code> agora consulta o projeto <strong>jddgebxqwmxngfitcftb</strong>.</li>
-            <li>Informe se ainda existe alguma referência ao backend anterior <strong>rkbxtymtjnlxd1awmscb</strong>.</li>
+            <li>Atualize o cliente Supabase usado pelo frontend para utilizar o projeto: <strong>jddgebxqwmxngfitcftb</strong>.</li>
+            <li>Utilize a URL e a publishable/anon key fornecidas pela integração Supabase já conectada ao Lovable (não hardcode).</li>
+            <li>Atualize também qualquer cliente Supabase usado no servidor, se existir, para o mesmo projeto.</li>
+            <li>Verifique especificamente: <code>client.ts</code>, <code>client.server.ts</code>, variáveis de ambiente, auth middleware/provider, login, forgot-password, update-password e licencas-xforge.</li>
+            <li>Remova referências ativas ao backend antigo: <strong>rkbxtymtjnlxd1awmscb</strong>.</li>
+            <li>Não modificar o design de nenhuma página.</li>
           </ol>
           
-          <div className="pt-4 border-t border-blue-500/20">
-            <p className="font-bold text-xs uppercase tracking-wider mb-2">Restrições:</p>
-            <ul className="list-disc pl-5 space-y-1 text-xs">
-              <li>Não alterar arquivos.</li>
-              <li>Não migrar dados.</li>
-              <li>Não criar tabelas.</li>
-              <li>Não revelar chaves secretas.</li>
-              <li>Apenas responder com o diagnóstico.</li>
+          <div className="mt-4 p-4 bg-primary/5 rounded-lg border border-primary/10">
+            <p className="font-bold">Validação Pós-Troca:</p>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>supabase.auth.getSession() consulta jddgebxqwmxngfitcftb</li>
+              <li>signInWithPassword usa jddgebxqwmxngfitcftb</li>
+              <li>resetPasswordForEmail usa jddgebxqwmxngfitcftb</li>
+              <li>/licencas-xforge usa a mesma sessão</li>
+              <li>xforge-admin é chamada no projeto jddgebxqwmxngfitcftb</li>
             </ul>
           </div>
           
