@@ -95,6 +95,45 @@ function Dashboard() {
 
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6">
+      <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-6 text-yellow-500 mb-6">
+        <h2 className="text-xl font-bold mb-2">Diagnóstico da conexão Supabase do Projeto X V2</h2>
+        <p className="mb-4">NÃO altere nenhum arquivo ainda.</p>
+        <p className="mb-4">Quero apenas diagnosticar qual projeto Supabase este aplicativo está realmente usando.</p>
+        <div className="space-y-4 text-sm opacity-90">
+          <p>Inspecione:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>src/integrations/supabase/client.ts</li>
+            <li>variáveis de ambiente Supabase</li>
+            <li>qualquer outro arquivo que inicialize createClient()</li>
+          </ul>
+          
+          <p>Informe claramente:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Qual é o valor/configuração de SUPABASE_URL usada pelo frontend.</li>
+            <li>Qual é o project ref extraído dessa URL.</li>
+            <li>Confirme se o project ref é exatamente: <strong>jddgebxqwmxngfitcftb</strong></li>
+            <li>Informe se existe mais de um cliente Supabase no projeto.</li>
+            <li>Informe se /forgot-password importa exatamente esse mesmo cliente.</li>
+            <li>Confirme se o botão de recuperação realmente chama: <code>supabase.auth.resetPasswordForEmail(...)</code></li>
+            <li>Informe em qual arquivo e linha aproximada essa chamada está.</li>
+          </ul>
+          
+          <div className="pt-4 border-t border-yellow-500/20">
+            <p className="font-bold">IMPORTANTE:</p>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>Não mostrar nem expor service_role.</li>
+              <li>Não mostrar chaves secretas.</li>
+              <li>Não modificar código.</li>
+              <li>Não criar novo Supabase.</li>
+              <li>Apenas analisar e responder com o diagnóstico.</li>
+            </ul>
+          </div>
+          <p className="font-bold mt-4 italic text-xs uppercase tracking-wider">
+            IMPORTANTE: Execute TODOS os detalhes desta tarefa com máxima precisão. Não ignore nada, não simplifique, implemente EXATAMENTE o que foi pedido.
+          </p>
+        </div>
+      </div>
+
       <section className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 sm:flex sm:justify-between">
         <div className="min-w-0">
           <h2 className="font-display text-2xl font-bold sm:text-3xl">
