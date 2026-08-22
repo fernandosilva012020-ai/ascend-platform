@@ -95,22 +95,24 @@ function Dashboard() {
 
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6">
-      <div className="bg-green-500/10 border border-green-500/20 rounded-xl p-6 text-green-500 mb-6">
-        <h2 className="text-xl font-bold mb-2">Transição Concluída</h2>
-        <p className="mb-4 font-semibold">O Projeto X V2 foi migrado com sucesso para o Supabase externo.</p>
+      <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-6 text-red-500 mb-6">
+        <h2 className="text-xl font-bold mb-2">Impedimento de Transição Direta</h2>
+        <p className="mb-4 font-semibold">A transição automática para o projeto <code>jddgebxqwmxngfitcftb</code> via manipulação de arquivos foi bloqueada por segurança.</p>
         
         <div className="space-y-4 text-sm opacity-90 text-foreground">
-          <p><strong>Status da Configuração:</strong></p>
-          <ul className="list-disc pl-5 space-y-1">
-            <li><strong>Project Ref Ativo:</strong> jddgebxqwmxngfitcftb</li>
-            <li><strong>URL:</strong> https://jddgebxqwmxngfitcftb.supabase.co</li>
-            <li><strong>Ambiente:</strong> Integrado via .env e Lovable Cloud.</li>
-            <li><strong>Autenticação:</strong> Supabase Auth (Login/Senha/Recuperação) operando no novo projeto.</li>
-            <li><strong>Licenças XForge:</strong> Comunicação via Edge Functions no projeto jddgebxqwmxngfitcftb.</li>
-          </ul>
+          <p>Para migrar o Projeto X V2 para o Supabase externo, siga estes passos obrigatórios:</p>
           
-          <div className="mt-4 p-3 bg-green-500/5 rounded-lg border border-green-500/20 text-xs">
-            <p>Referências ao backend antigo <code>rkbxtymtjnlxd1awmscb</code> foram removidas com sucesso de <code>supabase/config.toml</code> e <code>.env</code>.</p>
+          <ol className="list-decimal pl-5 space-y-2">
+            <li>Vá em <strong>Configurações do Projeto &gt; Integrações</strong> no painel do Lovable.</li>
+            <li>Localize a integração do <strong>Supabase</strong>.</li>
+            <li>Desconecte o projeto atual <code>rkbxtymtjnlxdlawmscb</code> (Lovable Cloud).</li>
+            <li>Conecte o projeto externo <code>jddgebxqwmxngfitcftb</code> fornecendo as credenciais solicitadas pela interface do Lovable.</li>
+            <li>Após a conexão bem-sucedida, o Lovable injetará automaticamente as novas variáveis de ambiente.</li>
+          </ol>
+          
+          <div className="mt-4 p-3 bg-red-500/5 rounded-lg border border-red-500/20 text-xs text-destructive">
+            <p className="font-bold">Por que isso é necessário?</p>
+            <p>O sandbox do Lovable utiliza variáveis protegidas que não podem ser sobrescritas manualmente via <code>.env</code> ou <code>config.toml</code> para evitar quebra de infraestrutura. A troca deve ser feita pelo Painel de Controle do Lovable.</p>
           </div>
         </div>
       </div>
