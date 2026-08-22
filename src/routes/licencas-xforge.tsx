@@ -104,6 +104,7 @@ function LicensesPage() {
       } = await supabase.auth.getSession();
 
       if (!session) {
+        // Redireciona para home (que renderiza login se não autenticado)
         navigate({ to: "/" });
         return;
       }
