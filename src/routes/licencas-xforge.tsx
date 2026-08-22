@@ -329,7 +329,7 @@ function LicensesPage() {
                         {error}
                       </p>
                       {error === "Sessão administrativa não encontrada." || error === "Sessão expirada. Entre novamente." ? (
-                        <Button variant="premium" className="mt-4" onClick={() => navigate({ to: "/" })}>
+                        <Button variant="premium" className="mt-4" onClick={fetchLicenses}>
                           Entrar novamente
                         </Button>
                       ) : (
