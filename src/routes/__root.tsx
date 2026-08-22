@@ -4,15 +4,19 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "@/hooks/useAuth";
+
 
 function NotFoundComponent() {
   return (
@@ -122,14 +126,26 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const { location } = useRouterState();
+  const isLoginPage = location.pathname === "/login";
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AppLayout>
-        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <Outlet />
-      </AppLayout>
-      <Toaster position="top-right" richColors />
+      <AuthProvider>
+        {isLoginPage ? (
+          <>
+            <Outlet />
+            <Toaster position="top-right" richColors />
+          </>
+        ) : (
+          <AppLayout>
+            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+            <Outlet />
+            <Toaster position="top-right" richColors />
+          </AppLayout>
+        )}
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
+
