@@ -72,11 +72,7 @@ export function AppSidebar() {
                             "bg-sidebar-accent text-sidebar-accent-foreground font-medium shadow-[inset_2px_0_0_0] shadow-sidebar-primary",
                         )}
                       >
-                        <Link 
-                          to={item.url} 
-                          onClick={() => setOpenMobile(false)}
-                          className="flex items-center gap-2"
-                        >
+                        <Link to={item.url} onClick={() => setOpenMobile(false)}>
                           <item.icon
                             className={cn("size-4 shrink-0", active && "text-sidebar-primary")}
                           />
