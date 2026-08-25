@@ -444,14 +444,24 @@ const handleStatusAction = async (
                           </DropdownMenuItem>
                           
                           {license.display_status === "active" ? (
-                            <DropdownMenuItem className="gap-2 text-destructive focus:text-destructive">
-                              <Lock className="size-4" /> Bloquear
-                            </DropdownMenuItem>
-                          ) : (
-                            <DropdownMenuItem className="gap-2 text-success focus:text-success">
-                              <Unlock className="size-4" /> Reativar
-                            </DropdownMenuItem>
-                          )}
+  <DropdownMenuItem
+    className="gap-2 text-destructive focus:text-destructive"
+    onClick={() =>
+      handleStatusAction("block", license.id)
+    }
+  >
+    <Lock className="size-4" /> Bloquear
+  </DropdownMenuItem>
+) : (
+  <DropdownMenuItem
+    className="gap-2 text-success focus:text-success"
+    onClick={() =>
+      handleStatusAction("reactivate", license.id)
+    }
+  >
+    <Unlock className="size-4" /> Reativar
+  </DropdownMenuItem>
+)}
                           
                           <DropdownMenuItem className="gap-2">
                             <RefreshCw className="size-4" /> Resetar dispositivo
