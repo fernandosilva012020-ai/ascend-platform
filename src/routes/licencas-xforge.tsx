@@ -153,7 +153,55 @@ function LicensesPage() {
     }
   }, [authLoading]);
 
+const handleStatusAction = async (
+  action: "block" | "reactivate",
+  licenseId: string
+) => {
+  if (!session?.access_token) {
+    toast.error("Sessão administrativa não encontrada.");
+    return;
+  }
 
+  try {
+    const { data, error } = await supabase.functions.invoke(
+      "xforge-admin",
+      {
+        body: {
+          action,
+          license_id: licenseId,
+        },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      }
+    );
+
+    if (error) {
+      console.error("Erro ao alterar licença:", error);
+      toast.error("Não foi possível alterar a licença.");
+      return;
+    }
+
+    if (!data?.ok) {
+      toast.error(
+        data?.message || "Não foi possível alterar a licença."
+      );
+      return;
+    }
+
+    toast.success(
+      action === "block"
+        ? "Licença bloqueada com sucesso!"
+        : "Licença reativada com sucesso!"
+    );
+
+    await fetchLicenses();
+  } catch (error) {
+    console.error(error);
+    toast.error("Não foi possível alterar a licença.");
+  }
+};
+  
   const getStatusLabel = (status: LicenseStatus) => {
     switch (status) {
       case "active":
