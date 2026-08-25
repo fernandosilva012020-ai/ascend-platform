@@ -201,6 +201,48 @@ const handleStatusAction = async (
     toast.error("Não foi possível alterar a licença.");
   }
 };
+
+const handleResetDevices = async (licenseId: string) => {
+  if (!session?.access_token) {
+    toast.error("Sessão administrativa não encontrada.");
+    return;
+  }
+
+  try {
+    const { data, error } = await supabase.functions.invoke(
+      "xforge-admin",
+      {
+        body: {
+          action: "reset_devices",
+          license_id: licenseId,
+        },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      }
+    );
+
+    if (error) {
+      console.error("Erro ao resetar dispositivos:", error);
+      toast.error("Não foi possível resetar os dispositivos.");
+      return;
+    }
+
+    if (!data?.ok) {
+      toast.error(
+        data?.message || "Não foi possível resetar os dispositivos."
+      );
+      return;
+    }
+
+    toast.success("Dispositivos resetados com sucesso!");
+
+    await fetchLicenses();
+  } catch (error) {
+    console.error(error);
+    toast.error("Não foi possível resetar os dispositivos.");
+  }
+};
   
   const getStatusLabel = (status: LicenseStatus) => {
     switch (status) {
