@@ -505,9 +505,12 @@ const handleResetDevices = async (licenseId: string) => {
   </DropdownMenuItem>
 )}
                           
-                          <DropdownMenuItem className="gap-2">
-                            <RefreshCw className="size-4" /> Resetar dispositivo
-                          </DropdownMenuItem>
+                          <DropdownMenuItem
+  className="gap-2"
+  onClick={() => handleResetDevices(license.id)}
+>
+  <RefreshCw className="size-4" /> Resetar dispositivo
+</DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem className="gap-2">
                             <Edit className="size-4" /> Editar
