@@ -446,9 +446,12 @@ function LicensesPage() {
       </section>
 
       <LicenseCreateModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-      />
+  isOpen={isCreateModalOpen}
+  onClose={() => {
+    setIsCreateModalOpen(false);
+    fetchLicenses();
+  }}
+/>
 
       <LicenseDetailsModal
         isOpen={isDetailsModalOpen}
