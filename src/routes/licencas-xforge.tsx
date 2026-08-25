@@ -40,7 +40,7 @@ import {
 import { toast } from "sonner";
 import { LicenseCreateModal } from "@/components/licenses/LicenseCreateModal";
 import { LicenseDetailsModal } from "@/components/licenses/LicenseDetailsModal";
-import { supabase } from "@/integrations/supabase/client";
+import { externalSupabase as supabase } from "@/integrations/supabase/external-client";
 
 export const Route = createFileRoute("/licencas-xforge")({
   head: () => ({
