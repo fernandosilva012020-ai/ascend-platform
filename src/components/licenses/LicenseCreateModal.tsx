@@ -113,9 +113,9 @@ export function LicenseCreateModal({
             return;
           }
 
-          body.expires_at = customDate.toISOString();
+          body["expires_at"] = customDate.toISOString();
         } else {
-          body.duration_days = Number(formData.period);
+          body["duration_days"] = Number(formData.period);
         }
       }
 
