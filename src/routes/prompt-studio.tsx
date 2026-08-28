@@ -4,6 +4,7 @@ import {
   BookOpen,
   History as HistoryIcon,
   ImageUp,
+  Loader2,
   Sparkles,
   Star,
   Wand2,
@@ -25,6 +26,7 @@ import { PromptResult } from "@/components/prompt-studio/PromptResult";
 import { PromptTemplates } from "@/components/prompt-studio/PromptTemplates";
 import { promptCategories, type PromptLevel } from "@/data/promptStudio";
 import { buildPrompt, scorePrompt } from "@/lib/promptBuilder";
+import { generatePromptWithGemini } from "@/lib/prompt-generator";
 
 export const Route = createFileRoute("/prompt-studio")({
   head: () => ({
@@ -86,6 +88,7 @@ function PromptStudioPage() {
   const [level, setLevel] = useState<PromptLevel>("profissional");
   const [result, setResult] = useState<string | null>(null);
   const [favorite, setFavorite] = useState(false);
+  const [generating, setGenerating] = useState(false);
 
   const [rawPrompt, setRawPrompt] = useState("");
   const [optimized, setOptimized] = useState<string | null>(null);
@@ -105,21 +108,61 @@ function PromptStudioPage() {
   };
 
   const handleEnhanceIdea = () => {
-    setEnhancing(true);
-    window.setTimeout(() => {
-      setIdea((current) =>
-        `${current.trim()} — com direção de arte profissional, foco em detalhes realistas, composição equilibrada e acabamento premium.`.trim(),
-      );
-      setEnhancing(false);
-      toast.success("Ideia refinada com sugestões profissionais.");
-    }, 700);
-  };
-
-  const generate = () => {
-    setResult(buildPrompt(buildInput));
-    setFavorite(false);
-    toast.success("Prompt gerado com sucesso.");
-  };
+      setEnhancing(true);
+      window.setTimeout(() => {
+        setIdea((current) =>
+          `${current.trim()} — com direção de arte profissional, foco em detalhes realistas, composição equilibrada e acabamento premium.`.trim(),
+        );
+        setEnhancing(false);
+        toast.success("Ideia refinada com sugestões profissionais.");
+      }, 700);
+    };
+  
+    const generate = async () => {
+      setGenerating(true);
+      setFavorite(false);
+  
+      try {
+            // Tenta gerar com Gemini primeiro
+            const response = await generatePromptWithGemini({
+              categoryId,
+              idea,
+              values: categoryValues,
+              aiId,
+              level,
+            });
+  
+        if (response && response.prompt) {
+          setResult(response.prompt);
+          toast.success("Prompt gerado com IA!");
+        } else {
+          // Fallback para mock
+          setResult(buildPrompt(buildInput));
+          toast.success("Prompt gerado com sucesso.");
+        }
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : "Erro desconhecido";
+  
+        if (errorMessage === "GEMINI_API_KEY_NOT_CONFIGURED") {
+          // Fallback para mock quando Gemini não está configurada
+          setResult(buildPrompt(buildInput));
+          toast.success("Prompt gerado com sucesso.");
+        } else if (errorMessage === "GEMINI_API_KEY_INVALID") {
+          toast.error("Gemini ainda não está configurada no servidor.");
+        } else if (errorMessage === "GEMINI_MODEL_UNAVAILABLE") {
+          toast.error("Modelo Gemini não disponível. Tente novamente.");
+        } else if (errorMessage === "GEMINI_QUOTA_EXCEEDED") {
+          toast.error("Limite de gerações da Gemini excedido.");
+        } else if (errorMessage === "EMPTY_RESPONSE") {
+          toast.error("Não foi possível gerar o prompt. Tente novamente.");
+        } else {
+          toast.error("Não foi possível gerar o prompt. Tente novamente.");
+        }
+      } finally {
+        setGenerating(false);
+      }
+    };
 
   const optimize = () => {
     if (!rawPrompt.trim()) {
@@ -225,9 +268,23 @@ function PromptStudioPage() {
                 <PromptLevelSelector value={level} onChange={setLevel} />
               </SectionCard>
 
-              <Button size="lg" className="h-14 w-full text-base" onClick={generate}>
-                <Sparkles className="size-5" />
-                Gerar Prompt Profissional
+              <Button
+                size="lg"
+                className="h-14 w-full text-base"
+                onClick={generate}
+                disabled={generating}
+              >
+                {generating ? (
+                  <>
+                    <Loader2 className="size-5 animate-spin" />
+                    Gerando com IA...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="size-5" />
+                    Gerar Prompt Profissional
+                  </>
+                )}
               </Button>
 
               {result ? (
