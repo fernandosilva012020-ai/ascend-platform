@@ -5,7 +5,7 @@ import { z } from "zod";
 import { promptCategories, aiTargets, type PromptLevel } from "@/data/promptStudio";
 
 // Modelo Gemini configurável server-side
-const GEMINI_MODEL = "gemini-2.5-flash";
+const GEMINI_MODEL = "gemini-3.6-flash";
 
 // Schema de validação dos dados de entrada
 const GeneratePromptInputSchema = z.object({

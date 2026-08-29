@@ -124,13 +124,15 @@ function PromptStudioPage() {
   
       try {
             // Tenta gerar com Gemini primeiro
-            const response = await generatePromptWithGemini({
-              categoryId,
-              idea,
-              values: categoryValues,
-              aiId,
-              level,
-            });
+          const response = await generatePromptWithGemini({
+  data: {
+    categoryId,
+    idea,
+    values: categoryValues,
+    aiId,
+    level,
+  },
+});
   
         if (response && response.prompt) {
           setResult(response.prompt);
