@@ -1,3 +1,4 @@
+import { useLandingPages } from "@/hooks/useLandingPages";
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
@@ -277,8 +278,12 @@ const initialPages: LandingPageData[] = [
 ];
 
 function Page() {
-  const [pages, setPages] =
-    useState<LandingPageData[]>(initialPages);
+  const {
+  pages,
+  loading,
+  upsertPage,
+  deletePage: deleteLandingPage,
+} = useLandingPages();
 
   const [editorOpen, setEditorOpen] =
     useState(false);
@@ -346,123 +351,138 @@ function Page() {
     setEditorOpen(true);
   }
 
-  function savePage() {
-    if (!editingPage) return;
+  async function savePage() {
+  if (!editingPage) return;
 
-    if (!editingPage.name.trim()) {
-      toast.error(
-        "Informe o nome da landing page.",
-      );
-      return;
-    }
+  if (!editingPage.name.trim()) {
+    toast.error("Informe o nome da landing page.");
+    return;
+  }
 
-    const updated: LandingPageData = {
-      ...editingPage,
-      name: editingPage.name.trim(),
-      updatedAt: nowIso(),
-    };
+  const updated: LandingPageData = {
+    ...editingPage,
+    name: editingPage.name.trim(),
+    updatedAt: nowIso(),
+  };
 
-    setPages((current) => {
-      const exists = current.some(
-        (page) => page.id === updated.id,
-      );
-
-      if (exists) {
-        return current.map((page) =>
-          page.id === updated.id
-            ? updated
-            : page,
-        );
-      }
-
-      return [updated, ...current];
-    });
+  try {
+    await upsertPage(updated);
 
     setEditorOpen(false);
     setEditingPage(null);
 
-    toast.success(
-      "Landing page salva com sucesso.",
+    toast.success("Landing page salva no Supabase.");
+  } catch (error) {
+    console.error(error);
+
+    toast.error(
+      error instanceof Error
+        ? error.message
+        : "Não foi possível salvar a landing page.",
     );
   }
+}
 
-  function duplicatePage(
-    page: LandingPageData,
-  ) {
-    const copyPage: LandingPageData = {
-      ...page,
+  async function duplicatePage(
+  page: LandingPageData,
+) {
+  const copyPage: LandingPageData = {
+    ...page,
+    id: crypto.randomUUID(),
+    name: `${page.name} - Cópia`,
+    slug: `${page.slug}-copia-${Date.now()}`,
+    status: "draft",
+    views: 0,
+    leadsCount: 0,
+    createdAt: nowIso(),
+    updatedAt: nowIso(),
+    benefits: page.benefits.map((item) => ({
+      ...item,
       id: crypto.randomUUID(),
-      name: `${page.name} - Cópia`,
-      slug: `${page.slug}-copia-${Date.now()}`,
-      status: "draft",
-      views: 0,
-      leadsCount: 0,
-      createdAt: nowIso(),
-      updatedAt: nowIso(),
-      benefits: page.benefits.map((item) => ({
+    })),
+    testimonials: page.testimonials.map(
+      (item) => ({
         ...item,
         id: crypto.randomUUID(),
-      })),
-      testimonials: page.testimonials.map(
-        (item) => ({
-          ...item,
-          id: crypto.randomUUID(),
-        }),
-      ),
-      form: {
-        ...page.form,
-      },
-    };
+      }),
+    ),
+    form: {
+      ...page.form,
+    },
+  };
 
-    setPages((current) => [
-      copyPage,
-      ...current,
-    ]);
-
-    toast.success("Página duplicada.");
-  }
-
-  function deletePage(
-    page: LandingPageData,
-  ) {
-    const confirmed = window.confirm(
-      `Excluir a landing page "${page.name}"?`,
-    );
-
-    if (!confirmed) return;
-
-    setPages((current) =>
-      current.filter(
-        (item) => item.id !== page.id,
-      ),
-    );
-
-    toast.success("Landing page excluída.");
-  }
-
-  function togglePublish(
-    page: LandingPageData,
-  ) {
-    setPages((current) =>
-      current.map((item) =>
-        item.id === page.id
-          ? {
-              ...item,
-              status:
-                item.status === "published"
-                  ? "draft"
-                  : "published",
-              updatedAt: nowIso(),
-            }
-          : item,
-      ),
-    );
+  try {
+    await upsertPage(copyPage);
 
     toast.success(
-      page.status === "published"
-        ? "Página movida para rascunho."
-        : "Página marcada como publicada.",
+      "Página duplicada e salva no Supabase.",
     );
+    } catch (error) {
+    console.error(error);
+
+    toast.error(
+      error instanceof Error
+        ? error.message
+        : "Não foi possível duplicar a página.",
+    );
+  }
+}
+
+async function deletePage(
+  page: LandingPageData,
+) {
+  const confirmed = window.confirm(
+    `Excluir a landing page "${page.name}"?`,
+  );
+
+  if (!confirmed) return;
+
+  try {
+    await deleteLandingPage(page.id);
+
+    toast.success(
+      "Landing page excluída do Supabase.",
+    );
+  } catch (error) {
+    console.error(error);
+
+    toast.error(
+      error instanceof Error
+        ? error.message
+        : "Não foi possível excluir a landing page.",
+    );
+  }
+}
+
+  async function togglePublish(
+    page: LandingPageData,
+  ) {
+    const updated: LandingPageData = {
+      ...page,
+      status:
+        page.status === "published"
+          ? "draft"
+          : "published",
+      updatedAt: nowIso(),
+    };
+
+    try {
+      await upsertPage(updated);
+
+      toast.success(
+        page.status === "published"
+          ? "Página movida para rascunho."
+          : "Página publicada e salva no Supabase.",
+      );
+    } catch (error) {
+      console.error(error);
+
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Não foi possível alterar a publicação.",
+      );
+    }
   }
 
   return (
