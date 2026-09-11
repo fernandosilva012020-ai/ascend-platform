@@ -49,6 +49,11 @@ export const navGroups: NavGroup[] = [
     label: "Inteligência",
     items: [
       {
+  title: "Automação WhatsApp",
+  url: "/whatsapp-automation",
+  icon: MessageSquare,
+},
+      {
         title: "Funcionário IA",
         url: "/funcionario-ia",
         icon: Bot,
