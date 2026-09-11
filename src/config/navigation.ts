@@ -1,7 +1,6 @@
-import { ..., MessageSquare } from "lucide-react";
-
 import {
   LayoutDashboard,
+  MessageSquare,
   Bot,
   Sparkles,
   Users,
@@ -45,14 +44,16 @@ export const navGroups: NavGroup[] = [
       },
     ],
   },
+
   {
     label: "Inteligência",
     items: [
       {
-  title: "Automação WhatsApp",
-  url: "/whatsapp-automation",
-  icon: MessageSquare,
-},
+        title: "Automação WhatsApp",
+        url: "/whatsapp-automation",
+        icon: MessageSquare,
+        description: "Automatize seu atendimento e suas conversas no WhatsApp.",
+      },
       {
         title: "Funcionário IA",
         url: "/funcionario-ia",
@@ -67,6 +68,7 @@ export const navGroups: NavGroup[] = [
       },
     ],
   },
+
   {
     label: "Vendas",
     items: [
@@ -102,6 +104,7 @@ export const navGroups: NavGroup[] = [
       },
     ],
   },
+
   {
     label: "Conteúdo",
     items: [
@@ -119,6 +122,7 @@ export const navGroups: NavGroup[] = [
       },
     ],
   },
+
   {
     label: "Gestão",
     items: [
@@ -136,6 +140,7 @@ export const navGroups: NavGroup[] = [
       },
     ],
   },
+
   {
     label: "Parceiros",
     items: [
@@ -159,6 +164,7 @@ export const navGroups: NavGroup[] = [
       },
     ],
   },
+
   {
     label: "Conta",
     items: [
