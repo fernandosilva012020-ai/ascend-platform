@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "sdk_version": "0.26.3",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://rkbxtymtjnlxdlawmscb.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "projeto-x",
+      "version": "0.1.0",
+      "title": "Projeto X"
+    },
+    "tools": [
+      {
+        "name": "whoami",
+        "title": "Quem sou eu",
+        "description": "Retorna a identidade da conta Projeto X conectada (id do usuário e e-mail) para confirmar a conexão.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        }
+      },
+      {
+        "name": "list_xforge_licenses",
+        "title": "Listar licenças XForge",
+        "description": "Lista as licenças da extensão XForge Pro (cliente, plano, status, validade e dispositivos) para o administrador conectado. Suporta busca por cliente ou código e filtro por status.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "search": {
+              "description": "Filtro opcional por nome do cliente ou código da licença.",
+              "type": "string"
+            },
+            "status": {
+              "description": "Filtro opcional por status da licença. Padrão: all.",
+              "type": "string",
+              "enum": [
+                "all",
+                "active",
+                "expired",
+                "suspended",
+                "revoked"
+              ]
+            },
+            "limit": {
+              "description": "Número máximo de licenças retornadas. Padrão: 50.",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200
+            }
+          }
+        },
+        "outputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        }
+      }
+    ]
+  }
+}

@@ -65,7 +65,7 @@ function AssinaturaPage() {
       const { data, error } = await supabase.functions.invoke("create-asaas-subscription", {
         body: {
           email: user.email,
-          name: user.user_metadata?.full_name || user.email?.split("@")[0],
+          name: user.user_metadata?.['full_name'] || user.email?.split("@")[0],
           cpfCnpj: cleanedCpf,
         },
       });

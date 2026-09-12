@@ -110,7 +110,7 @@ function Dashboard() {
         const { data: members } = await supabase
           .from("network_members")
           .select("id, status")
-          .eq("sponsor_id", user.id);
+          .eq("sponsor_id", user!.id);
 
         const totalDirect = members?.length ?? 0;
         const totalActive =
@@ -125,7 +125,7 @@ function Dashboard() {
         const { data: commissions } = await supabase
           .from("network_commissions")
           .select("amount, created_at")
-          .eq("recipient_id", user.id);
+          .eq("recipient_id", user!.id);
 
         let sumAllCommissions = 0;
         let sumMonthCommissions = 0;
@@ -145,7 +145,7 @@ function Dashboard() {
         const { data: payments } = await supabase
           .from("network_payments")
           .select("amount, created_at, status")
-          .eq("user_id", user.id)
+          .eq("user_id", user!.id)
           .gte("created_at", isoFirstDay);
 
         const sumSales =
