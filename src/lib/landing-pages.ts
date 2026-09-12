@@ -54,7 +54,7 @@ function toDatabaseContent(
     heroImageUrl: page.heroImageUrl,
     form: page.form,
     benefitsTitle: page.benefitsTitle,
-    benefitsSubtitle: page.benefitsSubtitle,
+    benefitsSubtitle: page.benefitsSubtitle ?? "",
     benefits: page.benefits,
     testimonialsTitle: page.testimonialsTitle,
     testimonialsSubtitle: page.testimonialsSubtitle,
