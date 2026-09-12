@@ -23,9 +23,6 @@ for (const key of requiredEnvVars) {
   }
 }
 
-// Modo de teste: Se WHATSAPP_TEST_MODE=true, permite conexão sem QR Code inicial
-const TEST_MODE = process.env.WHATSAPP_TEST_MODE === 'true';
-
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -53,8 +50,8 @@ async function startWhatsAppBot() {
   const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys');
   
   const sock = makeWASocket({
-    auth: TEST_MODE ? { client: state } : state,
-    printQRInTerminal: !TEST_MODE,
+    auth: state,
+    printQRInTerminal: true,
     logger: pino({ level: 'silent' })
   });
 
