@@ -11,7 +11,7 @@ const GEMINI_MODEL = "gemini-3.6-flash";
 const GeneratePromptInputSchema = z.object({
   categoryId: z.string(),
   idea: z.string().min(1, "A ideia é obrigatória"),
-  values: z.record(z.string(), z.string()),
+  values: z.record(z.string()),
   aiId: z.string(),
   level: z.enum(["rapido", "profissional", "ultra"]),
 });
@@ -139,7 +139,6 @@ function buildUserPrompt(input: GeneratePromptInput): string {
 
 // Server function para gerar prompt com Gemini
 export const generatePromptWithGemini = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => data)
   .handler(async ({ data }) => {
     // Parse e validação dos dados
     const parsed = GeneratePromptInputSchema.safeParse(data);
