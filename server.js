@@ -1,8 +1,8 @@
+import { GoogleGenAI } from "@google/genai";
 import 'dotenv/config';
 import express from 'express';
 import { makeWASocket, useMultiFileAuthState } from '@whiskeysockets/baileys';
 import { createClient } from '@supabase/supabase-js';
-import OpenAI from 'openai';
 import pino from 'pino';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -15,7 +15,7 @@ const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const requiredEnvVars = ['SUPABASE_URL', 'SUPABASE_KEY', 'OPENAI_API_KEY', 'WHATSAPP_NUMERO_TESTE'];
+const requiredEnvVars = ['SUPABASE_URL', 'SUPABASE_KEY', 'GOOGLE_API_KEY', 'WHATSAPP_NUMERO_TESTE'];
 for (const key of requiredEnvVars) {
   if (!process.env[key]) {
     console.error(`❌ Variável de ambiente ausente: ${key}. Configure o arquivo .env (veja .env.example).`);
@@ -24,7 +24,7 @@ for (const key of requiredEnvVars) {
 }
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY });
 
 const MEU_NUMERO_DE_TESTE = process.env.WHATSAPP_NUMERO_TESTE;
 
@@ -86,9 +86,10 @@ async function startWhatsAppBot() {
 
   sock.ev.on('messages.upsert', async ({ messages, type }) => {
     if (type !== 'notify') return;
-    
+
     const m = messages[0];
-    if (!m.message || m.key.fromMe) return;
+    if (!m.message) return;
+    if (m.key.fromMe) return;
 
     const remoteJid = m.key.remoteJid;
     if (remoteJid.endsWith('@g.us')) return;
@@ -101,19 +102,24 @@ async function startWhatsAppBot() {
     console.log(`📩 Mensagem de ${whatsappNumero}: "${textoMensagem}"`);
 
     const autorizado = whatsappNumero === MEU_NUMERO_DE_TESTE ? true : await verificarAssinaturaPremium(whatsappNumero);
-    
+
     if (!autorizado) {
-      await sock.sendMessage(remoteJid, { text: '❌ Sua assinatura está expirada.' });
+      await sock.sendMessage(remoteJid, { text: '❌ Sua assinatura está expirada. Ative seu plano para usar o agente.' });
       return;
     }
 
     try {
-      // MODO TESTE: Resposta fixa para evitar erro de OpenAI (sem créditos)
-      const mockResponse = "🤖 Esta é uma resposta automática de teste do Projeto X. (IA desativada por falta de créditos)";
-      await sock.sendMessage(remoteJid, { text: mockResponse });
-      console.log('🤖 Resposta enviada (MOCK)!');
+      const response = await ai.models.generateContent({
+        model: "gemini-2.0-flash",
+        contents: `Você é um assistente comercial do Projeto X. Seja direto e prestativo.\n\nCliente: ${textoMensagem}`,
+      });
+      const responseText = response.text;
+
+      await sock.sendMessage(remoteJid, { text: responseText });
+      console.log('🤖 Resposta enviada via Gemini!');
     } catch (error) {
-      console.error('Erro na IA:', error);
+      console.error('❌ Erro na IA (Gemini):', error.message || error);
+      // Não enviamos mensagem de erro para o WhatsApp se falhar para evitar poluição/loops
     }
   });
 }
@@ -141,10 +147,19 @@ app.get('/api/status', (req, res) => {
   res.json({ status: statusGlobal, qr: qrGlobal });
 });
 
-// Nova rota para testar o chat diretamente (sem OpenAI)
+// Rota para testar o chat diretamente com Gemini
 app.get('/api/test-chat', async (req, res) => {
-  const message = req.query.message || 'Olá';
-  res.json({ response: `🤖 Resposta simulada para: "${message}" (Modo sem créditos OpenAI)` });
+  try {
+    const message = req.query.message || 'Olá';
+    const response = await ai.models.generateContent({
+      model: "gemini-2.0-flash",
+      contents: `Você é um assistente comercial do Projeto X. Seja direto e prestativo.\n\nCliente: ${message}`,
+    });
+    res.json({ response: response.text });
+  } catch (error) {
+    console.error('Erro no teste Gemini:', error.message);
+    res.status(500).json({ error: 'Erro ao chamar Gemini. Verifique a GOOGLE_API_KEY.' });
+  }
 });
 
 export default app;

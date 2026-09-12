@@ -1,11 +1,43 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { MessageSquare, RefreshCw, CheckCircle2, AlertCircle } from "lucide-react";
+import { MessageSquare, RefreshCw, CheckCircle2, AlertCircle, Lock, Sparkles, Loader2 } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 
 export default function WhatsappAutomation() {
   const [status, setStatus] = useState("Verificando...");
   const [qrCode, setQrCode] = useState("");
   const [loading, setLoading] = useState(true);
+  const [checkingPlan, setCheckingPlan] = useState(true);
+  const [isPremium, setIsPremium] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function checkPlan() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          setCheckingPlan(false);
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("plano")
+          .eq("id", user.id)
+          .maybeSingle();
+
+        if (!error && data?.plano?.toLowerCase() === "premium") {
+          setIsPremium(true);
+        }
+      } catch (err) {
+        console.error("Erro ao verificar assinatura:", err);
+      } finally {
+        setCheckingPlan(false);
+      }
+    }
+
+    checkPlan();
+  }, []);
 
   const fetchStatus = async () => {
     try {
@@ -27,10 +59,43 @@ export default function WhatsappAutomation() {
   };
 
   useEffect(() => {
-    fetchStatus();
-    const interval = setInterval(fetchStatus, 3000);
-    return () => clearInterval(interval);
-  }, []);
+    if (isPremium) {
+      fetchStatus();
+      const interval = setInterval(fetchStatus, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [isPremium]);
+
+  if (checkingPlan) {
+    return (
+      <div className="flex h-[50vh] items-center justify-center">
+        <Loader2 className="size-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!isPremium) {
+    return (
+      <div className="p-8 max-w-2xl mx-auto text-center space-y-6">
+        <div className="bg-card border border-border rounded-2xl p-8 shadow-sm space-y-4">
+          <div className="mx-auto w-12 h-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
+            <Lock className="w-6 h-6" />
+          </div>
+          <h2 className="text-2xl font-bold tracking-tight text-foreground">Recurso Exclusivo para Assinantes</h2>
+          <p className="text-muted-foreground text-sm max-w-md mx-auto">
+            A automação e integração com WhatsApp é um recurso do plano <strong>Premium</strong>. Ative sua assinatura para escanear o QR Code e liberar seu Agente de IA.
+          </p>
+          <button
+            onClick={() => navigate({ to: "/assinatura" })}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition cursor-pointer shadow-lg shadow-primary/20"
+          >
+            <Sparkles className="w-4 h-4" />
+            Conhecer Plano Premium
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-8 max-w-5xl mx-auto space-y-6">
