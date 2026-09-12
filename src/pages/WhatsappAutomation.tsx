@@ -4,15 +4,15 @@ import { MessageSquare, RefreshCw, CheckCircle2, AlertCircle, Lock, Sparkles, Lo
 import { useNavigate } from "@tanstack/react-router";
 
 export default function WhatsappAutomation() {
-  const [status, setStatus] = useState("Verificando...");
+  const [status, setStatus] = useState("Desconectado");
   const [qrCode, setQrCode] = useState("");
-  const [loading, setLoading] = useState(true);
   const [checkingPlan, setCheckingPlan] = useState(true);
   const [isPremium, setIsPremium] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function checkPlan() {
+    async function initUser() {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
@@ -20,32 +20,41 @@ export default function WhatsappAutomation() {
           return;
         }
 
-        const { data, error } = await supabase
+        setUserId(user.id);
+
+        const { data } = await supabase
           .from("profiles")
           .select("plano")
           .eq("id", user.id)
           .maybeSingle();
 
-        if (!error && data?.plano?.toLowerCase() === "premium") {
+        if (data?.plano?.toLowerCase() === "premium") {
           setIsPremium(true);
+          // Inicia a sessão individual no backend
+          fetch("http://localhost:3000/api/start-session", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId: user.id }),
+          }).catch(err => console.error("Erro ao chamar start-session:", err));
         }
       } catch (err) {
-        console.error("Erro ao verificar assinatura:", err);
+        console.error("Erro ao verificar conta:", err);
       } finally {
         setCheckingPlan(false);
       }
     }
 
-    checkPlan();
+    initUser();
   }, []);
 
-  const fetchStatus = async () => {
+  const fetchUserStatus = async () => {
+    if (!userId) return;
     try {
       const { data } = await supabase
-        .from("bot_status")
+        .from("user_whatsapp_sessions")
         .select("*")
-        .eq("id", 1)
-        .single();
+        .eq("user_id", userId)
+        .maybeSingle();
 
       if (data) {
         setStatus(data.status || "Desconectado");
@@ -53,18 +62,16 @@ export default function WhatsappAutomation() {
       }
     } catch (err) {
       console.error("Erro ao buscar status:", err);
-    } finally {
-      setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (isPremium) {
-      fetchStatus();
-      const interval = setInterval(fetchStatus, 3000);
+    if (isPremium && userId) {
+      fetchUserStatus();
+      const interval = setInterval(fetchUserStatus, 3000);
       return () => clearInterval(interval);
     }
-  }, [isPremium]);
+  }, [isPremium, userId]);
 
   if (checkingPlan) {
     return (
@@ -83,7 +90,7 @@ export default function WhatsappAutomation() {
           </div>
           <h2 className="text-2xl font-bold tracking-tight text-foreground">Recurso Exclusivo para Assinantes</h2>
           <p className="text-muted-foreground text-sm max-w-md mx-auto">
-            A automação e integração com WhatsApp é um recurso do plano <strong>Premium</strong>. Ative sua assinatura para escanear o QR Code e liberar seu Agente de IA.
+            Sua própria automação do WhatsApp dedicada. Ative sua assinatura Premium para liberar a geração do seu QR Code individual.
           </p>
           <button
             onClick={() => navigate({ to: "/assinatura" })}
@@ -100,8 +107,8 @@ export default function WhatsappAutomation() {
   return (
     <div className="p-8 max-w-5xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Automação WhatsApp</h1>
-        <p className="text-muted-foreground text-sm">Gerencie o agente de atendimento e o status de conexão via Supabase.</p>
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">Automação WhatsApp Dedicada</h1>
+        <p className="text-muted-foreground text-sm">Escaneie com seu número de atendimento para conectar seu agente exclusivo.</p>
       </div>
 
       <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-6">
@@ -111,12 +118,12 @@ export default function WhatsappAutomation() {
               <MessageSquare className="w-6 h-6" />
             </div>
             <div>
-              <h2 className="font-semibold text-lg text-foreground">Status do Agente</h2>
-              <p className="text-xs text-muted-foreground">Sincronizado com o servidor local (server.js)</p>
+              <h2 className="font-semibold text-lg text-foreground">Status da Sua Conexão</h2>
+              <p className="text-xs text-muted-foreground">Instância individual gerenciada em tempo real</p>
             </div>
           </div>
           <button 
-            onClick={fetchStatus} 
+            onClick={fetchUserStatus} 
             className="flex items-center gap-2 px-3.5 py-2 text-sm font-medium bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition"
           >
             <RefreshCw className="w-4 h-4" /> Atualizar
@@ -137,16 +144,16 @@ export default function WhatsappAutomation() {
 
           {status !== "Conectado" && (
             <div className="mt-2 flex flex-col items-center gap-3 bg-muted/50 p-6 rounded-lg border border-border">
-              <strong className="text-foreground text-sm">Escaneie com o WhatsApp:</strong>
+              <strong className="text-foreground text-sm">Escaneie o seu QR Code individual:</strong>
               {qrCode && qrCode.startsWith("data:image") ? (
                 <img
                   src={qrCode}
-                  alt="QR Code para conectar o WhatsApp"
+                  alt="Seu QR Code individual"
                   className="w-64 h-64 rounded-lg border border-border bg-white p-2"
                 />
               ) : (
                 <p className="text-xs text-muted-foreground text-center">
-                  Aguardando geração do QR Code pelo terminal...
+                  Gerando instância dedicada para seu número...
                 </p>
               )}
             </div>
