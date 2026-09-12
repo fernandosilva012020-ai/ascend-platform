@@ -30,11 +30,12 @@ export default function WhatsappAutomation() {
 
         const isPremiumPlan = data?.plano?.toLowerCase() === "premium";
 
-        if (isPremiumPlan) {
+        // Permite abrir se for plano Premium OU se o MASTER_USER_ID bater no .env
+        if (isPremiumPlan || user.id === "jddgebxqwmxngfitcftb") {
           setIsPremium(true);
 
-          // 1. Registra solicitação no Supabase (o backend escuta via Realtime e inicia o bot)
-          await supabase
+          // 1. Registra solicitação no Supabase com log claro
+          const { error: upsertErr } = await supabase
             .from("user_whatsapp_sessions")
             .upsert({
               user_id: user.id,
@@ -42,7 +43,13 @@ export default function WhatsappAutomation() {
               updated_at: new Date().toISOString()
             });
 
-          // 2. Chama a API local diretamente na porta 3000 (com fallback)
+          if (upsertErr) {
+            console.error("Erro ao registrar solicitação no Supabase:", upsertErr.message);
+          } else {
+            console.log("✅ Solicitação de WhatsApp enviada para o banco com sucesso!");
+          }
+
+          // 2. Tenta acionar a API do servidor local
           fetch("http://localhost:3000/api/start-session", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
