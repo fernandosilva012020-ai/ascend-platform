@@ -149,7 +149,7 @@ app.get('/api/status', (req, res) => {
 
 export default app;
 
-app.listen(3000, () => {
+const server = app.listen(3000, () => {
   console.log('🚀 Servidor rodando em http://localhost:3000');
   startWhatsAppBot();
 });
