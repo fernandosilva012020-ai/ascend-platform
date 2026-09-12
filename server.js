@@ -108,16 +108,10 @@ async function startWhatsAppBot() {
     }
 
     try {
-      const completion = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: 'Você é um assistente comercial do Projeto X. Seja direto e prestativo.' },
-          { role: 'user', content: textoMensagem }
-        ],
-      });
-      
-      await sock.sendMessage(remoteJid, { text: completion.choices[0].message.content });
-      console.log('🤖 Resposta enviada!');
+      // MODO TESTE: Resposta fixa para evitar erro de OpenAI (sem créditos)
+      const mockResponse = "🤖 Esta é uma resposta automática de teste do Projeto X. (IA desativada por falta de créditos)";
+      await sock.sendMessage(remoteJid, { text: mockResponse });
+      console.log('🤖 Resposta enviada (MOCK)!');
     } catch (error) {
       console.error('Erro na IA:', error);
     }
@@ -147,22 +141,10 @@ app.get('/api/status', (req, res) => {
   res.json({ status: statusGlobal, qr: qrGlobal });
 });
 
-// Nova rota para testar a IA diretamente (sem WhatsApp)
+// Nova rota para testar o chat diretamente (sem OpenAI)
 app.get('/api/test-chat', async (req, res) => {
-  try {
-    const message = req.query.message || 'Olá, como posso ajudar?';
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        { role: 'system', content: 'Você é um assistente comercial do Projeto X. Seja direto e prestativo.' },
-        { role: 'user', content: message }
-      ],
-    });
-    res.json({ response: completion.choices[0].message.content });
-  } catch (error) {
-    console.error('Erro no teste de chat:', error);
-    res.status(500).json({ error: 'Erro ao chamar IA' });
-  }
+  const message = req.query.message || 'Olá';
+  res.json({ response: `🤖 Resposta simulada para: "${message}" (Modo sem créditos OpenAI)` });
 });
 
 export default app;
