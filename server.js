@@ -23,6 +23,9 @@ for (const key of requiredEnvVars) {
   }
 }
 
+// Modo de teste: Se WHATSAPP_TEST_MODE=true, permite conexão sem QR Code inicial
+const TEST_MODE = process.env.WHATSAPP_TEST_MODE === 'true';
+
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -50,8 +53,8 @@ async function startWhatsAppBot() {
   const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys');
   
   const sock = makeWASocket({
-    auth: state,
-    printQRInTerminal: true,
+    auth: TEST_MODE ? { client: state } : state,
+    printQRInTerminal: !TEST_MODE,
     logger: pino({ level: 'silent' })
   });
 
@@ -145,6 +148,24 @@ async function verificarAssinaturaPremium(whatsapp) {
 // Rota para o painel web consultar o status do bot
 app.get('/api/status', (req, res) => {
   res.json({ status: statusGlobal, qr: qrGlobal });
+});
+
+// Nova rota para testar a IA diretamente (sem WhatsApp)
+app.get('/api/test-chat', async (req, res) => {
+  try {
+    const message = req.query.message || 'Olá, como posso ajudar?';
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [
+        { role: 'system', content: 'Você é um assistente comercial do Projeto X. Seja direto e prestativo.' },
+        { role: 'user', content: message }
+      ],
+    });
+    res.json({ response: completion.choices[0].message.content });
+  } catch (error) {
+    console.error('Erro no teste de chat:', error);
+    res.status(500).json({ error: 'Erro ao chamar IA' });
+  }
 });
 
 export default app;
