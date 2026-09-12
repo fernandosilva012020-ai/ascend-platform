@@ -28,14 +28,32 @@ export default function WhatsappAutomation() {
           .eq("id", user.id)
           .maybeSingle();
 
-        if (data?.plano?.toLowerCase() === "premium") {
+        const isPremiumPlan = data?.plano?.toLowerCase() === "premium";
+
+        if (isPremiumPlan) {
           setIsPremium(true);
-          // Inicia a sessão individual no backend
+
+          // 1. Registra solicitação no Supabase (o backend escuta via Realtime e inicia o bot)
+          await supabase
+            .from("user_whatsapp_sessions")
+            .upsert({
+              user_id: user.id,
+              status: "Solicitado",
+              updated_at: new Date().toISOString()
+            });
+
+          // 2. Chama a API local diretamente na porta 3000 (com fallback)
           fetch("http://localhost:3000/api/start-session", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ userId: user.id }),
-          }).catch(err => console.error("Erro ao chamar start-session:", err));
+          }).catch(() => {
+            fetch("/api/start-session", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ userId: user.id }),
+            }).catch(e => console.log("start-session fallback:", e));
+          });
         }
       } catch (err) {
         console.error("Erro ao verificar conta:", err);
