@@ -164,9 +164,6 @@ app.post('/api/start-session', async (req, res) => {
     return res.status(400).json({ error: 'userId obrigatório' });
   }
 
-  // Liberação de acesso:
-  // 1) MASTER_USER_ID (seu usuário) sempre libera o QR, mesmo fora do plano premium.
-  // 2) Qualquer usuário com plano = premium na tabela profiles também libera.
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('plano')
@@ -181,15 +178,36 @@ app.post('/api/start-session', async (req, res) => {
     return res.status(403).json({ error: 'Apenas assinantes Premium podem usar o WhatsApp Bot' });
   }
 
+  // Garante linha de sessão para o polling do front não ficar preso
+  await supabase.from('user_whatsapp_sessions').upsert({
+    user_id: userId,
+    status: 'Solicitado',
+    updated_at: new Date().toISOString()
+  }, { onConflict: 'user_id' });
+
   startBotForUser(userId);
   res.json({ message: 'Sessão iniciada/verificada com sucesso' });
 });
 
-// Inicialização: carrega bots de usuários Premium ou que possuem sessão cadastrada
+// Leitura via backend (bypassa RLS do front): front consulta aqui primeiro
+app.get('/api/session/:userId', async (req, res) => {
+  const { userId } = req.params;
+  const { data, error } = await supabase
+    .from('user_whatsapp_sessions')
+    .select('*')
+    .eq('user_id', userId)
+    .maybeSingle();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data || { status: 'Desconectado', qr_code: '' });
+});
+
+// Inicialização: carrega bots de usuários Premium + MASTER_USER_ID + sessões pendentes
 async function carregarSessoesExistentes() {
   console.log('🔍 Buscando usuários Premium para iniciar instâncias...');
 
-  // Busca todos os usuários com plano Premium no Supabase
+  const autoStart = new Set();
+  if (MASTER_USER_ID) autoStart.add(MASTER_USER_ID);
+
   const { data: premiumUsers, error } = await supabase
     .from('profiles')
     .select('id, plano')
@@ -197,17 +215,24 @@ async function carregarSessoesExistentes() {
 
   if (error) {
     console.error('⚠️ Erro ao consultar usuários Premium:', error.message);
+  } else if (premiumUsers) {
+    for (const u of premiumUsers) autoStart.add(u.id);
+  }
+
+  const { data: pending } = await supabase
+    .from('user_whatsapp_sessions')
+    .select('user_id')
+    .in('status', ['Solicitado', 'Aguardando leitura do QR Code', 'Conectado']);
+
+  if (pending) for (const s of pending) autoStart.add(s.user_id);
+
+  if (autoStart.size === 0) {
+    console.log('ℹ️ Nenhum usuário para auto-iniciar no momento.');
     return;
   }
 
-  if (premiumUsers && premiumUsers.length > 0) {
-    console.log(`✨ Encontrados ${premiumUsers.length} usuários autorizados. Iniciando bots...`);
-    for (const u of premiumUsers) {
-      startBotForUser(u.id);
-    }
-  } else {
-    console.log('ℹ️ Nenhum usuário Premium encontrado no momento.');
-  }
+  console.log(`✨ Auto-iniciando ${autoStart.size} bot(s)...`);
+  for (const uid of autoStart) startBotForUser(uid);
 }
 
 // Listener em tempo real: ativa o bot automaticamente assim que o usuário virar Premium ou atualizar

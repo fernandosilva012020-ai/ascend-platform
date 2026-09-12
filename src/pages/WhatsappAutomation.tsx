@@ -30,38 +30,45 @@ export default function WhatsappAutomation() {
 
         const isPremiumPlan = data?.plano?.toLowerCase() === "premium";
 
-        // Permite abrir se for plano Premium OU se o MASTER_USER_ID bater no .env
-        if (isPremiumPlan || user.id === "jddgebxqwmxngfitcftb") {
-          setIsPremium(true);
+        // 1. Registra solicitação no Supabase (backend também garante a linha)
+        await supabase
+          .from("user_whatsapp_sessions")
+          .upsert({
+            user_id: user.id,
+            status: "Solicitado",
+            updated_at: new Date().toISOString()
+          });
 
-          // 1. Registra solicitação no Supabase com log claro
-          const { error: upsertErr } = await supabase
-            .from("user_whatsapp_sessions")
-            .upsert({
-              user_id: user.id,
-              status: "Solicitado",
-              updated_at: new Date().toISOString()
-            });
-
-          if (upsertErr) {
-            console.error("Erro ao registrar solicitação no Supabase:", upsertErr.message);
-          } else {
-            console.log("✅ Solicitação de WhatsApp enviada para o banco com sucesso!");
-          }
-
-          // 2. Tenta acionar a API do servidor local
-          fetch("http://localhost:3000/api/start-session", {
+        // 2. O backend decide quem libera (MASTER_USER_ID ou plano premium).
+        // Se liberar (200), destrava a tela mesmo que o front ainda não veja o plano.
+        try {
+          const resp = await fetch("http://localhost:3000/api/start-session", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ userId: user.id }),
-          }).catch(() => {
-            fetch("/api/start-session", {
+          });
+          if (resp.ok) {
+            setIsPremium(true);
+            return;
+          }
+        } catch {
+          // tenta rota relativa (produção / proxy)
+          try {
+            const resp2 = await fetch("/api/start-session", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ userId: user.id }),
-            }).catch(e => console.log("start-session fallback:", e));
-          });
+            });
+            if (resp2.ok) {
+              setIsPremium(true);
+              return;
+            }
+          } catch (e) {
+            console.log("start-session fallback:", e);
+          }
         }
+
+        if (isPremiumPlan) setIsPremium(true);
       } catch (err) {
         console.error("Erro ao verificar conta:", err);
       } finally {
@@ -75,6 +82,21 @@ export default function WhatsappAutomation() {
   const fetchUserStatus = async () => {
     if (!userId) return;
     try {
+      // 1) Backend primeiro (usa service_role, bypassa RLS do front)
+      try {
+        const r = await fetch(`http://localhost:3000/api/session/${userId}`);
+        if (r.ok) {
+          const d = await r.json();
+          if (d && (d.status || d.qr_code)) {
+            setStatus(d.status || "Desconectado");
+            setQrCode(d.qr_code || "");
+            return;
+          }
+        }
+      } catch {
+        // ignora e tenta via Supabase direto
+      }
+
       const { data } = await supabase
         .from("user_whatsapp_sessions")
         .select("*")
