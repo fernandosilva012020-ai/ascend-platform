@@ -7,7 +7,7 @@ const isWindows = process.platform === "win32";
 
 export default defineConfig({
   tanstackStart: {
-    server: { entry: "src/server.ts" },
+    server: { entry: "server" },
   },
   vite: {
     plugins: isWindows ? [] : [mcpPlugin()],
