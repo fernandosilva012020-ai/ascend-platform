@@ -146,14 +146,14 @@ function createMessage(
 function Page() {
   const [roleId, setRoleId] = useState<RoleId>("vendas");
   const [messages, setMessages] = useState<ChatMessage[]>([
-    createMessage("assistant", employees[0].greeting),
+    createMessage("assistant", employees[0]!.greeting),
   ]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
 
   const activeEmployee = useMemo(
-    () => employees.find((employee) => employee.id === roleId) ?? employees[0],
+    () => employees.find((employee) => employee.id === roleId) ?? employees[0]!,
     [roleId],
   );
 

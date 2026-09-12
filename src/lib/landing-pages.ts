@@ -45,7 +45,7 @@ function toDatabaseContent(
   return {
     theme: page.theme,
     primaryColor: page.primaryColor,
-    badgeText: page.badgeText,
+    badgeText: page.badgeText ?? "",
     headline: page.headline,
     subtitle: page.subtitle,
     mainText: page.mainText,
