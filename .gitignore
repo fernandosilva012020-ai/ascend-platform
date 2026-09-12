@@ -34,3 +34,5 @@ dist-ssr
 
 .env
 auth_info_baileys/
+auth_info_*/
+whatsapp-bot.log
