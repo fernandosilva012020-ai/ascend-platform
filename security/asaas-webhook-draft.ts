@@ -64,6 +64,21 @@ Deno.serve(async (request) => {
 
   const providerStatus = String(verified.status ?? "");
   const externalReference = String(verified.externalReference ?? "");
+  // Mensalidade atual no Projeto X; deverá vir de registro próprio de cobrança
+  // antes de este rascunho ser promovido para produção.
+  const expectedAmountCents = 4990;
+  const receivedAmountCents = Math.round(Number(verified.value) * 100);
+  const validUserReference = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(externalReference);
+  if (!Number.isFinite(receivedAmountCents) || receivedAmountCents !== expectedAmountCents) {
+    return json({ error: "Valor da cobrança divergente" }, 409);
+  }
+  if (!validUserReference || !verified.subscription || typeof verified.subscription !== "string") {
+    return json({ error: "Vínculo da assinatura incompleto" }, 409);
+  }
+  if (!["RECEIVED", "CONFIRMED"].includes(providerStatus)) {
+    // Eventos como cobrança pendente, estorno e atraso exigem lógica separada.
+    return json({ error: "Pagamento ainda não confirmado para ativação" }, 409);
+  }
   console.info("Evento Asaas validado em modo somente leitura", {
     eventId: event.id,
     eventType: event.event,
