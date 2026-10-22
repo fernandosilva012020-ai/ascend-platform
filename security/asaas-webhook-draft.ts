@@ -23,7 +23,7 @@ Deno.serve(async (request) => {
   if (request.method !== "POST") return json({ error: "Método não permitido" }, 405);
 
   const expectedToken = Deno.env.get("ASAAS_WEBHOOK_AUTH_TOKEN") ?? "";
-  if (expectedToken.length < 32 || expectedToken.length > 255 || /\\s/.test(expectedToken)) {
+  if (expectedToken.length < 32 || expectedToken.length > 255 || /\s/.test(expectedToken)) {
     console.error("ASAAS_WEBHOOK_AUTH_TOKEN não configurado corretamente");
     return json({ error: "Webhook indisponível" }, 503);
   }
