@@ -4,7 +4,7 @@ import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import { AppHeader } from "./AppHeader";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/lib/supabase";
+import { externalSupabase as supabase } from "@/integrations/supabase/external-client";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
