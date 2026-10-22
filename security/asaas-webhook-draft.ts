@@ -44,12 +44,37 @@ Deno.serve(async (request) => {
     return json({ error: "JSON inválido" }, 400);
   }
 
-  // HARD STOP: Do not activate subscriptions until DB schema, authenticated
-  // payment retrieval from Asaas, event idempotency, and ordering are implemented.
-  // Never trust payment.externalReference or payment status from the webhook alone.
-  console.warn("Webhook autenticado, mas processamento ainda não habilitado", {
-    id: event.id,
-    type: event.event,
+  // Validate the payment with the provider, not only with webhook payload.
+  const payment = event.payment as Record<string, unknown>;
+  const paymentId = typeof payment.id === "string" ? payment.id : "";
+  const asaasKey = Deno.env.get("ASAAS_API_KEY") ?? "";
+  const apiBase = Deno.env.get("ASAAS_URL") ?? "https://api.asaas.com/v3";
+  if (!paymentId || !/^pay_[A-Za-z0-9_-]+$/.test(paymentId) || !asaasKey) {
+    return json({ error: "Pagamento inválido ou credenciais indisponíveis" }, 503);
+  }
+  const providerResponse = await fetch(
+    `${apiBase}/payments/${encodeURIComponent(paymentId)}`,
+    { headers: { "access_token": asaasKey, "Accept": "application/json" } },
+  ).catch(() => null);
+  if (!providerResponse?.ok) {
+    return json({ error: "Falha na validação com o Asaas" }, 503);
+  }
+  const verified = await providerResponse.json() as Record<string, unknown>;
+  if (verified.id !== paymentId) return json({ error: "Identificação divergente" }, 409);
+
+  const providerStatus = String(verified.status ?? "");
+  const externalReference = String(verified.externalReference ?? "");
+  console.info("Evento Asaas validado em modo somente leitura", {
+    eventId: event.id,
+    eventType: event.event,
+    paymentId,
+    providerStatus,
+    linkedUser: Boolean(externalReference),
   });
-  return json({ error: "Processamento de pagamentos ainda não habilitado" }, 503);
+
+  // HARD STOP: the confirmed profiles schema has 'plano', NOT 'plan'.
+  // Before enabling writes: persist event IDs idempotently, verify subscription,
+  // amount and user mapping, handle ordering/refunds, and test RLS/authorization.
+  // This draft never grants or revokes subscriptions.
+  return json({ error: "Pagamento verificado; processamento ainda não habilitado" }, 503);
 });
