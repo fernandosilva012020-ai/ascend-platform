@@ -81,17 +81,14 @@ function InvitePage() {
 
       if (error) throw error;
 
-      toast.success("Conta criada! Redirecionando para o pagamento...");
-
-      // Se não gerou sessão direta (por conta de confirmação de e-mail), força o login
+      // A confirmação de e-mail pode impedir o login até a verificação.
       if (!data.session) {
-        await externalSupabase.auth.signInWithPassword({
-          email: cleanEmail,
-          password,
-        });
+        toast.success("Cadastro recebido! Confirme seu e-mail para entrar.");
+        void navigate({ to: "/login" });
+        return;
       }
 
-      // Redireciona imediatamente para a tela de assinatura
+      toast.success("Conta criada! Continue para a assinatura.");
       void navigate({ to: "/assinatura" });
     } catch (caughtError) {
       toast.error("Não foi possível criar o cadastro.", {
