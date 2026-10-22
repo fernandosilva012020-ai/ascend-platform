@@ -30,3 +30,13 @@ Referências oficiais:
 A consulta a information_schema.columns da tabela public.profiles retornou seis colunas: `id`, `nome`, `plano`, `status`, `created_at`, `inicio_teste`.
 **Não existem** `plan`, `subscription_status` nem `updated_at`. O webhook Asaas atualmente publicado tenta atualizar esses três campos, de modo que a atualização de perfil falharia. O frontend usa `plano`, compatível com a tabela. Ainda não foi verificado o formato e as políticas da tabela, nem a autenticação do webhook; NÃO implantar uma mudança que libere premium sem validar a origem e persistência do pagamento e idempotência.
 Próximo passo: verificar o estado de `profiles` e das tabelas de pagamentos por consultas somente leitura e implementar o webhook de forma autenticada, transacional e testada no ambiente de homologação.
+
+## Confirmações adicionais por consultas SQL (22/10/2026)
+- `network_v2_confirm_payment`: `anon` e `authenticated` sem permissão EXECUTE; `service_role` com EXECUTE; função SECURITY DEFINER. A função precisa continuar inacessível a usuários comuns.
+- `network_payments`: índice único sobre `(provider, provider_payment_id)` confirmado; também há índice único de `provider_event_id`. A rotina contém advisory lock por pagamento, pesquisa prévia e bloqueio do membro `FOR UPDATE`.
+- `provider_webhook_events`: índice único nomeado `provider_webhook_events_provider_provider_event_id_key`. O índice ajuda a proteger o registro, mas não comprova por si só processamento exatamente uma vez.
+- O corpo da rotina V2 também atualiza `community_subscriptions`, credita carteiras e cria `board_positions`. Essas operações precisam ser avaliadas separadamente das cobranças legítimas de assinatura; esta auditoria não autoriza nem implementa redistribuição financeira entre participantes.
+- As confirmações estruturais **não** substituem testes de concorrência, autenticação no endpoint, verificação de status do provedor e tratamento de estornos.
+
+## Próxima ação segura
+Preparar correção isolada para a assinatura SaaS, após identificar ligação entre ID Asaas da cobrança, assinatura e usuário no banco. O webhook atual não deve promover `profiles.plano` diretamente apenas com dados recebidos da notificação. Registrar de forma atômica evento autenticado/idempotente e confirmar o pagamento pela API do provedor antes de atualizar acesso. Não mudar a Edge Function de produção sem testes e plano de reversão.
