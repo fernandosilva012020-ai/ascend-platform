@@ -18,11 +18,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
+    let mounted = true;
+    supabase.auth.getSession()
+      .then(({ data: { session }, error }) => {
+        if (!mounted) return;
+        if (error) console.error("Erro ao recuperar sessão:", error);
+        setSession(error ? null : session);
+        setUser(error ? null : session?.user ?? null);
+      })
+      .catch((error) => {
+        if (mounted) console.error("Erro ao iniciar autenticação:", error);
+      })
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
 
     // Listen for changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -31,7 +40,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signOut = async () => {
