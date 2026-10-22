@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { supabase } from "@/lib/supabase";
+import { externalSupabase as supabase } from "@/integrations/supabase/external-client";
 import { toast } from "sonner";
 import { Check, ShieldCheck, Zap, ArrowLeft, Loader2, Sparkles } from "lucide-react";
 
