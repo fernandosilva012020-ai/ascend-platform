@@ -25,3 +25,8 @@
 Referências oficiais:
 - https://docs.asaas.com/docs/receba-eventos-do-asaas-no-seu-endpoint-de-webhook
 - https://docs.asaas.com/docs/sobre-os-webhooks
+
+## Diagnóstico confirmado pelo SQL Editor (22/10/2026)
+A consulta a information_schema.columns da tabela public.profiles retornou seis colunas: `id`, `nome`, `plano`, `status`, `created_at`, `inicio_teste`.
+**Não existem** `plan`, `subscription_status` nem `updated_at`. O webhook Asaas atualmente publicado tenta atualizar esses três campos, de modo que a atualização de perfil falharia. O frontend usa `plano`, compatível com a tabela. Ainda não foi verificado o formato e as políticas da tabela, nem a autenticação do webhook; NÃO implantar uma mudança que libere premium sem validar a origem e persistência do pagamento e idempotência.
+Próximo passo: verificar o estado de `profiles` e das tabelas de pagamentos por consultas somente leitura e implementar o webhook de forma autenticada, transacional e testada no ambiente de homologação.
